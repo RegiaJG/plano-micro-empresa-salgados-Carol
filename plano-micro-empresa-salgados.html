@@ -1,0 +1,1922 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plano de Negócio — Salgados & Doces</title>
+  <style>
+    :root {
+      --laranja: #e85d04;
+      --laranja-claro: #f48c06;
+      --dourado: #faa307;
+      --bege: #fff8f0;
+      --cinza-escuro: #1a1a2e;
+      --cinza-medio: #4a4a6a;
+      --cinza-claro: #f4f4f8;
+      --verde: #2d6a4f;
+      --verde-claro: #52b788;
+      --vermelho: #c1121f;
+      --sidebar-w: 268px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bege);
+      color: var(--cinza-escuro);
+      line-height: 1.7;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ══════════════════════════════════════════
+       SIDEBAR
+    ══════════════════════════════════════════ */
+    .sidebar {
+      width: var(--sidebar-w);
+      min-height: 100vh;
+      background: var(--cinza-escuro);
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      z-index: 200;
+      transition: transform 0.3s ease;
+    }
+
+    .sidebar-brand {
+      padding: 24px 20px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      background: linear-gradient(160deg, rgba(232,93,4,0.25), transparent);
+    }
+    .brand-icon { font-size: 2rem; margin-bottom: 6px; }
+    .brand-name {
+      display: block;
+      color: white;
+      font-weight: 700;
+      font-size: 1rem;
+      line-height: 1.3;
+    }
+    .brand-sub {
+      display: block;
+      color: var(--dourado);
+      font-size: 0.72rem;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+    .brand-credits {
+      display: block;
+      color: rgba(255,255,255,0.4);
+      font-size: 0.68rem;
+      margin-top: 6px;
+    }
+
+    .nav-menu {
+      flex: 1;
+      padding: 12px 0 20px;
+      overflow-y: auto;
+    }
+
+    .nav-group-label {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.28);
+      padding: 14px 20px 4px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px 9px 16px;
+      margin: 1px 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      color: rgba(255,255,255,0.62);
+      font-size: 0.85rem;
+      transition: all 0.18s;
+      user-select: none;
+    }
+    .nav-item:hover {
+      background: rgba(255,255,255,0.07);
+      color: rgba(255,255,255,0.9);
+    }
+    .nav-item.active {
+      background: linear-gradient(135deg, var(--laranja), var(--dourado));
+      color: white;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(232,93,4,0.35);
+    }
+    .nav-badge {
+      background: rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.7);
+      font-size: 0.65rem;
+      font-weight: 700;
+      width: 22px; height: 22px;
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .nav-item.active .nav-badge {
+      background: rgba(255,255,255,0.25);
+      color: white;
+    }
+    .nav-icon { font-size: 1rem; width: 20px; text-align: center; flex-shrink: 0; }
+    .nav-lucas {
+      margin-left: auto;
+      background: var(--dourado);
+      color: var(--cinza-escuro);
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 10px;
+    }
+
+    .sidebar-footer {
+      padding: 16px 20px;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.25);
+      text-align: center;
+    }
+
+    /* ══════════════════════════════════════════
+       OVERLAY (mobile)
+    ══════════════════════════════════════════ */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 199;
+    }
+    .overlay.visible { display: block; }
+
+    /* ══════════════════════════════════════════
+       MAIN WRAPPER
+    ══════════════════════════════════════════ */
+    .main-wrapper {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: white;
+      border-bottom: 1px solid #ececf2;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 24px;
+      height: 56px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+    }
+    .hamburger span {
+      display: block;
+      width: 20px; height: 2px;
+      background: var(--cinza-escuro);
+      border-radius: 2px;
+      transition: all 0.2s;
+    }
+    .topbar-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--cinza-escuro);
+      flex: 1;
+    }
+    .topbar-nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-btn {
+      background: var(--cinza-claro);
+      border: 1px solid #e0e0ec;
+      color: var(--cinza-escuro);
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+    }
+    .nav-btn:hover { background: var(--laranja); color: white; border-color: var(--laranja); }
+    .nav-btn:disabled { opacity: 0.3; cursor: default; }
+    .nav-btn:disabled:hover { background: var(--cinza-claro); color: var(--cinza-escuro); border-color: #e0e0ec; }
+    .page-counter {
+      font-size: 0.78rem;
+      color: var(--cinza-medio);
+      min-width: 44px;
+      text-align: center;
+    }
+
+    /* ── PROGRESS BAR ── */
+    .progress-track {
+      height: 3px;
+      background: #ececf2;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--laranja), var(--dourado));
+      transition: width 0.35s ease;
+    }
+
+    /* ══════════════════════════════════════════
+       PAGES
+    ══════════════════════════════════════════ */
+    .content-area { flex: 1; }
+
+    .page {
+      display: none;
+      padding: 40px 40px 80px;
+      max-width: 900px;
+      margin: 0 auto;
+      animation: fadeUp 0.25s ease;
+    }
+    .page.active { display: block; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* bottom nav inside each page */
+    .page-nav-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid #e8e8f0;
+    }
+    .page-nav-footer button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: none;
+      border: 1.5px solid #d8d8e8;
+      color: var(--cinza-medio);
+      padding: 10px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.88rem;
+      transition: all 0.18s;
+    }
+    .page-nav-footer button:hover {
+      background: var(--laranja);
+      color: white;
+      border-color: var(--laranja);
+    }
+    .page-nav-footer button:disabled { opacity: 0.25; cursor: default; }
+    .page-nav-footer button:disabled:hover {
+      background: none; color: var(--cinza-medio); border-color: #d8d8e8;
+    }
+
+    /* ══════════════════════════════════════════
+       EXISTING CONTENT STYLES (preserved)
+    ══════════════════════════════════════════ */
+    .step {
+      background: white;
+      border-radius: 16px;
+      padding: 36px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      position: relative;
+      overflow: hidden;
+    }
+    .step::before {
+      content: attr(data-numero);
+      position: absolute;
+      top: -10px; right: 20px;
+      font-size: 7rem;
+      font-weight: 900;
+      color: var(--laranja);
+      opacity: 0.06;
+      line-height: 1;
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--cinza-claro);
+    }
+    .step-icon {
+      background: linear-gradient(135deg, var(--laranja), var(--dourado));
+      color: white;
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(232,93,4,0.3);
+    }
+    .step-title h2 { font-size: 1.35rem; color: var(--cinza-escuro); }
+    .step-title p  { font-size: 0.88rem; color: var(--cinza-medio); margin-top: 2px; }
+
+    table { width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 0.93rem; }
+    thead tr { background: linear-gradient(135deg, var(--laranja), var(--dourado)); color: white; }
+    thead th { padding: 12px 14px; text-align: left; font-weight: 600; }
+    tbody tr:nth-child(even) { background: var(--cinza-claro); }
+    tbody tr:hover { background: #fff3e8; }
+    tbody td { padding: 11px 14px; border-bottom: 1px solid #ececf2; }
+    .td-valor { text-align: right; font-weight: 600; color: var(--laranja); }
+    .td-total { background: var(--cinza-escuro) !important; color: white; font-weight: 700; }
+    .td-total td { border: none; }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      margin: 18px 0;
+    }
+    .card {
+      background: var(--cinza-claro);
+      border-radius: 12px;
+      padding: 18px;
+      border-left: 4px solid var(--laranja);
+    }
+    .card.verde { border-left-color: var(--verde-claro); }
+    .card.azul  { border-left-color: #4361ee; }
+    .card-icon  { font-size: 1.6rem; margin-bottom: 8px; }
+    .card h4    { font-size: 0.95rem; color: var(--cinza-escuro); margin-bottom: 4px; }
+    .card p     { font-size: 0.84rem; color: var(--cinza-medio); }
+
+    .alerta {
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin: 16px 0;
+      font-size: 0.92rem;
+      display: flex;
+      gap: 10px;
+    }
+    .alerta.info    { background: #e8f4fd; border-left: 4px solid #3a86ff; color: #1d4e89; }
+    .alerta.sucesso { background: #d8f3dc; border-left: 4px solid var(--verde-claro); color: var(--verde); }
+    .alerta.atencao { background: #fff3cd; border-left: 4px solid var(--dourado); color: #856404; }
+    .alerta.perigo  { background: #fde8e8; border-left: 4px solid var(--vermelho); color: var(--vermelho); }
+    .alerta-icon    { font-size: 1.1rem; flex-shrink: 0; margin-top: 2px; }
+
+    .checklist { list-style: none; margin: 14px 0; }
+    .checklist li {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px dashed #e5e5ef;
+      font-size: 0.93rem;
+    }
+    .checklist li:last-child { border-bottom: none; }
+    .check-box {
+      width: 22px; height: 22px;
+      border: 2px solid var(--laranja);
+      border-radius: 5px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .orcamento-box {
+      background: var(--cinza-escuro);
+      color: white;
+      border-radius: 16px;
+      padding: 36px;
+    }
+    .orcamento-box h2 { color: var(--dourado); margin-bottom: 24px; font-size: 1.4rem; }
+    .orca-linha {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.95rem;
+    }
+    .orca-linha:last-child { border-bottom: none; }
+    .orca-total {
+      margin-top: 16px;
+      padding: 18px;
+      background: var(--laranja);
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+    .valor-verde { color: var(--verde-claro); font-weight: 700; }
+
+    .timeline { position: relative; padding-left: 30px; margin: 18px 0; }
+    .timeline::before {
+      content: ''; position: absolute;
+      left: 10px; top: 0; bottom: 0;
+      width: 2px; background: var(--laranja); opacity: 0.3;
+    }
+    .tl-item { position: relative; margin-bottom: 24px; }
+    .tl-item::before {
+      content: ''; position: absolute;
+      left: -24px; top: 6px;
+      width: 14px; height: 14px;
+      background: var(--laranja);
+      border-radius: 50%;
+      border: 3px solid white;
+      box-shadow: 0 0 0 2px var(--laranja);
+    }
+    .tl-item h4 { font-size: 1rem; color: var(--laranja); margin-bottom: 6px; }
+    .tl-item p  { font-size: 0.9rem; color: var(--cinza-medio); }
+
+    .dois-paineis {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 16px 0;
+    }
+    .painel { background: var(--cinza-claro); border-radius: 12px; padding: 20px; }
+    .painel h4 { color: var(--laranja); margin-bottom: 12px; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    .painel ul { list-style: none; }
+    .painel ul li { padding: 5px 0; font-size: 0.9rem; color: var(--cinza-medio); }
+    .painel ul li::before { content: '→ '; color: var(--laranja); }
+
+    /* HOME page cards */
+    .home-header {
+      background: linear-gradient(135deg, var(--laranja), var(--dourado));
+      color: white;
+      border-radius: 20px;
+      padding: 40px;
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .home-header::after {
+      content: '🥟';
+      position: absolute;
+      right: 30px; top: 50%;
+      transform: translateY(-50%);
+      font-size: 5rem;
+      opacity: 0.15;
+    }
+    .home-header h1 { font-size: 1.8rem; margin-bottom: 8px; }
+    .home-header p  { opacity: 0.9; font-size: 0.95rem; }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .metric-card {
+      background: white;
+      border-radius: 14px;
+      padding: 22px 18px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      border-top: 3px solid var(--laranja);
+      text-align: center;
+    }
+    .metric-card .metric-icon { font-size: 1.6rem; margin-bottom: 8px; }
+    .metric-card .metric-val  { font-size: 1.1rem; font-weight: 800; color: var(--laranja); line-height: 1.2; }
+    .metric-card .metric-lbl  { font-size: 0.75rem; color: var(--cinza-medio); margin-top: 4px; }
+
+    .steps-overview {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+    }
+    .step-card {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      cursor: pointer;
+      border: 1.5px solid #ececf2;
+      transition: all 0.18s;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .step-card:hover {
+      border-color: var(--laranja);
+      box-shadow: 0 4px 16px rgba(232,93,4,0.15);
+      transform: translateY(-2px);
+    }
+    .step-card-num {
+      background: var(--cinza-claro);
+      color: var(--laranja);
+      font-weight: 800;
+      font-size: 0.75rem;
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .step-card-info h4 { font-size: 0.85rem; color: var(--cinza-escuro); margin-bottom: 2px; font-weight: 600; }
+    .step-card-info p  { font-size: 0.75rem; color: var(--cinza-medio); }
+    .step-card.lucas-card { border-color: var(--dourado); background: #fffbf0; }
+    .step-card.lucas-card .step-card-num { background: #fff3cd; color: #856404; }
+
+    /* ══ RESPONSIVE ══ */
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .main-wrapper { margin-left: 0; }
+      .hamburger { display: flex; }
+      .page { padding: 24px 20px 60px; }
+      .dois-paineis { grid-template-columns: 1fr; }
+      .home-header h1 { font-size: 1.4rem; }
+      .home-header::after { display: none; }
+      .step { padding: 24px; }
+    }
+
+    @media print {
+      .sidebar, .topbar, .progress-track, .page-nav-footer { display: none; }
+      .main-wrapper { margin-left: 0; }
+      .page { display: block !important; padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════ SIDEBAR ══════════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon">🥟</div>
+    <span class="brand-name">Salgados & Doces</span>
+    <span class="brand-sub">Protocolo Carol · v1.0</span>
+    <span class="brand-credits">Marketing & Design: RegiaJG (Lucas)</span>
+  </div>
+
+  <nav class="nav-menu">
+
+    <div class="nav-group-label">Início</div>
+    <div class="nav-item" data-page="home" onclick="showPage('home')">
+      <span class="nav-icon">🏠</span>
+      <span>Visão Geral</span>
+    </div>
+
+    <div class="nav-group-label">Fundação</div>
+    <div class="nav-item" data-page="passo1" onclick="showPage('passo1')">
+      <span class="nav-badge">01</span>
+      <span>Regularização Legal</span>
+    </div>
+    <div class="nav-item" data-page="passo2" onclick="showPage('passo2')">
+      <span class="nav-badge">02</span>
+      <span>Estrutura e Equipamentos</span>
+    </div>
+    <div class="nav-item" data-page="passo3" onclick="showPage('passo3')">
+      <span class="nav-badge">03</span>
+      <span>Ingredientes</span>
+    </div>
+    <div class="nav-item" data-page="passo4" onclick="showPage('passo4')">
+      <span class="nav-badge">04</span>
+      <span>Embalagem</span>
+    </div>
+
+    <div class="nav-group-label">Identidade</div>
+    <div class="nav-item" data-page="passo5" onclick="showPage('passo5')">
+      <span class="nav-badge">05</span>
+      <span>Visual & Branding</span>
+      <span class="nav-lucas">Lucas</span>
+    </div>
+
+    <div class="nav-group-label">Operação</div>
+    <div class="nav-item" data-page="passo6" onclick="showPage('passo6')">
+      <span class="nav-badge">06</span>
+      <span>Produção</span>
+    </div>
+    <div class="nav-item" data-page="passo7" onclick="showPage('passo7')">
+      <span class="nav-badge">07</span>
+      <span>Precificação</span>
+    </div>
+
+    <div class="nav-group-label">Vendas</div>
+    <div class="nav-item" data-page="passo8" onclick="showPage('passo8')">
+      <span class="nav-badge">08</span>
+      <span>iFood</span>
+    </div>
+    <div class="nav-item" data-page="passo9" onclick="showPage('passo9')">
+      <span class="nav-badge">09</span>
+      <span>Tráfego Orgânico</span>
+    </div>
+    <div class="nav-item" data-page="passo10" onclick="showPage('passo10')">
+      <span class="nav-badge">10</span>
+      <span>Fase 2: Pago</span>
+    </div>
+    <div class="nav-item" data-page="b2b" onclick="showPage('b2b')">
+      <span class="nav-icon">🤝</span>
+      <span>B2B e Eventos</span>
+    </div>
+    <div class="nav-item" data-page="congelados" onclick="showPage('congelados')">
+      <span class="nav-icon">❄️</span>
+      <span>Linha de Congelados</span>
+    </div>
+
+    <div class="nav-group-label">Gestão</div>
+    <div class="nav-item" data-page="financeiro" onclick="showPage('financeiro')">
+      <span class="nav-icon">📊</span>
+      <span>Gestão Financeira</span>
+    </div>
+    <div class="nav-item" data-page="kpis" onclick="showPage('kpis')">
+      <span class="nav-icon">📈</span>
+      <span>Métricas e KPIs</span>
+    </div>
+    <div class="nav-item" data-page="orcamento" onclick="showPage('orcamento')">
+      <span class="nav-icon">💰</span>
+      <span>Orçamento</span>
+    </div>
+    <div class="nav-item" data-page="riscos" onclick="showPage('riscos')">
+      <span class="nav-icon">⚠️</span>
+      <span>Gestão de Riscos</span>
+    </div>
+    <div class="nav-item" data-page="roadmap" onclick="showPage('roadmap')">
+      <span class="nav-icon">🗓️</span>
+      <span>Roadmap 6 meses</span>
+    </div>
+
+  </nav>
+
+  <div class="sidebar-footer">Maio 2026</div>
+</aside>
+
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<!-- ══════════════════ MAIN ══════════════════ -->
+<div class="main-wrapper">
+
+  <div class="topbar">
+    <button class="hamburger" id="hamburger" onclick="toggleSidebar()">
+      <span></span><span></span><span></span>
+    </button>
+    <span class="topbar-title" id="topbar-title">Visão Geral</span>
+    <div class="topbar-nav">
+      <button class="nav-btn" id="btn-prev" onclick="prevPage()" title="Anterior">&#8592;</button>
+      <span class="page-counter" id="page-counter">1 / 14</span>
+      <button class="nav-btn" id="btn-next" onclick="nextPage()" title="Próximo">&#8594;</button>
+    </div>
+  </div>
+
+  <div class="progress-track">
+    <div class="progress-fill" id="progress-fill" style="width:7.14%"></div>
+  </div>
+
+  <div class="content-area">
+
+    <!-- ══════════════ HOME ══════════════ -->
+    <section class="page active" id="home" data-title="Visão Geral">
+      <div class="home-header">
+        <h1>🥟 Micro Empresa de Salgados & Doces</h1>
+        <p>Plano completo de implantação — do MEI ao primeiro pedido</p>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-icon">💼</div>
+          <div class="metric-val">R$ 2.450<br><small style="font-size:0.7rem;font-weight:400">até R$ 5.309</small></div>
+          <div class="metric-lbl">Investimento inicial</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon">📅</div>
+          <div class="metric-val">Mês 2–3</div>
+          <div class="metric-lbl">Break-even estimado</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon">📈</div>
+          <div class="metric-val">R$ 3.500+</div>
+          <div class="metric-lbl">Receita mês 6</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon">📋</div>
+          <div class="metric-val">10 Passos</div>
+          <div class="metric-lbl">Do zero à operação</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon">🆓</div>
+          <div class="metric-val">MEI</div>
+          <div class="metric-lbl">Abertura gratuita</div>
+        </div>
+      </div>
+
+      <h3 style="margin-bottom:16px; color:var(--cinza-escuro); font-size:1rem;">Navegue pelos passos</h3>
+      <div class="steps-overview">
+        <div class="step-card" onclick="showPage('passo1')">
+          <div class="step-card-num">01</div>
+          <div class="step-card-info"><h4>Regularização Legal</h4><p>MEI · Vigilância Sanitária</p></div>
+        </div>
+        <div class="step-card" onclick="showPage('passo2')">
+          <div class="step-card-num">02</div>
+          <div class="step-card-info"><h4>Estrutura e Equipamentos</h4><p>O que comprar e por quanto</p></div>
+        </div>
+        <div class="step-card" onclick="showPage('passo3')">
+          <div class="step-card-num">03</div>
+          <div class="step-card-info"><h4>Ingredientes</h4><p>Estoque inicial · Fornecedores</p></div>
+        </div>
+        <div class="step-card" onclick="showPage('passo4')">
+          <div class="step-card-num">04</div>
+          <div class="step-card-info"><h4>Embalagem</h4><p>Apresentação · Etiquetagem</p></div>
+        </div>
+        <div class="step-card lucas-card" onclick="showPage('passo5')">
+          <div class="step-card-num">05</div>
+          <div class="step-card-info"><h4>Identidade Visual ✨</h4><p>Logo · Peças · Cardápio — Lucas</p></div>
+        </div>
+        <div class="step-card" onclick="showPage('passo6')">
+          <div class="step-card-num">06</div>
+          <div class="step-card-info"><h4>Produção</h4><p>Fluxo · BPF · Congelamento</p></div>
+        </div>
+        <div class="step-card" onclick="showPage('passo7')">
+          <div class="step-card-num">07</div>
+          <div class="step-card-info"><h4>Precificação</h4><p>Fórmula · Tabela de preços</p></div>
+        </div>
+        <div class="step-card" onclick="showPage('passo8')">
+          <div class="step-card-num">08</div>
+          <div class="step-card-info"><h4>iFood</h4><p>Cadastro · Planos · Taxas</p></div>
+        </div>
+        <div class="step-card" onclick="showPage('passo9')">
+          <div class="step-card-num">09</div>
+          <div class="step-card-info"><h4>Tráfego Orgânico</h4><p>Instagram · WhatsApp · Google</p></div>
+        </div>
+        <div class="step-card" onclick="showPage('passo10')">
+          <div class="step-card-num">10</div>
+          <div class="step-card-info"><h4>Fase 2: Tráfego Pago</h4><p>Meta Ads · Página mestre</p></div>
+        </div>
+        <div class="step-card" onclick="showPage('b2b')">
+          <div class="step-card-num">🤝</div>
+          <div class="step-card-info"><h4>B2B e Eventos</h4><p>Festas · Corporativo · Alto ticket</p></div>
+        </div>
+        <div class="step-card" onclick="showPage('congelados')">
+          <div class="step-card-num">❄️</div>
+          <div class="step-card-info"><h4>Linha de Congelados</h4><p>Canal complementar · Maior prazo</p></div>
+        </div>
+        <div class="step-card" onclick="showPage('financeiro')">
+          <div class="step-card-num">📊</div>
+          <div class="step-card-info"><h4>Gestão Financeira</h4><p>Caixa · Pagamentos · Sazonalidade</p></div>
+        </div>
+        <div class="step-card" onclick="showPage('kpis')">
+          <div class="step-card-num">📈</div>
+          <div class="step-card-info"><h4>Métricas e KPIs</h4><p>O que medir · Como saber se está indo bem</p></div>
+        </div>
+        <div class="step-card" onclick="showPage('orcamento')">
+          <div class="step-card-num">💰</div>
+          <div class="step-card-info"><h4>Orçamento</h4><p>Investimento · Custos · Receita</p></div>
+        </div>
+        <div class="step-card" onclick="showPage('riscos')">
+          <div class="step-card-num">⚠️</div>
+          <div class="step-card-info"><h4>Gestão de Riscos</h4><p>Cenários · Plano B · Fundo emergência</p></div>
+        </div>
+        <div class="step-card" onclick="showPage('roadmap')">
+          <div class="step-card-num">🗓️</div>
+          <div class="step-card-info"><h4>Roadmap</h4><p>6 primeiros meses</p></div>
+        </div>
+      </div>
+
+      <div class="page-nav-footer">
+        <button disabled>← Anterior</button>
+        <button onclick="nextPage()">Passo 1 →</button>
+      </div>
+    </section>
+
+    <!-- ══════════════ PASSO 1 ══════════════ -->
+    <section class="page" id="passo1" data-title="Regularização Legal">
+      <div class="step" data-numero="01">
+        <div class="step-header">
+          <div class="step-icon">📄</div>
+          <div class="step-title">
+            <h2>Passo 1 — Regularização Legal</h2>
+            <p>MEI · CNPJ · Vigilância Sanitária · Curso de Manipulação</p>
+          </div>
+        </div>
+
+        <div class="alerta sucesso">
+          <span class="alerta-icon">✅</span>
+          <span><strong>Boa notícia:</strong> Quem fabrica e vende salgados pode ser MEI! O CNAE correto é <strong>5620-1/04 — Fornecimento de alimentos preparados preponderantemente para consumo domiciliar</strong>, e o registro é <strong>totalmente gratuito</strong>.</span>
+        </div>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">1.1 — Abertura do MEI</h3>
+        <ul class="checklist">
+          <li><div class="check-box"></div><span>Acesse o Portal do Empreendedor em <strong>gov.br/empresas-e-negocios/pt-br/empreendedor</strong></span></li>
+          <li><div class="check-box"></div><span>Informe CPF, dados pessoais e escolha o <strong>CNAE 5620-1/04</strong></span></li>
+          <li><div class="check-box"></div><span>Escolha o endereço (pode ser residencial para produção em casa)</span></li>
+          <li><div class="check-box"></div><span>Assine o <strong>Termo de Ciência e Responsabilidade Sanitária</strong></span></li>
+          <li><div class="check-box"></div><span>Receba o <strong>CNPJ instantaneamente</strong> — imprima o CCMEI</span></li>
+          <li><div class="check-box"></div><span>Abra conta PJ gratuita (Nubank, Inter, Mercado Pago, C6)</span></li>
+        </ul>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">1.2 — Vigilância Sanitária</h3>
+        <div class="alerta sucesso">
+          <span class="alerta-icon">✅</span>
+          <span>O MEI é <strong>isento da taxa de fiscalização sanitária</strong> (Lei Complementar 123/2006). Porém, precisa cumprir as <em>Boas Práticas de Fabricação (BPF)</em>.</span>
+        </div>
+        <ul class="checklist">
+          <li><div class="check-box"></div><span>Entre em contato com a <strong>Vigilância Sanitária do seu município</strong> para verificar exigências locais</span></li>
+          <li><div class="check-box"></div><span>Solicite o <strong>Cadastro de Estabelecimento</strong> (para MEI, geralmente mais simples que licença completa)</span></li>
+          <li><div class="check-box"></div><span>Adeque a cozinha às BPF: superfícies laváveis, higiene, armazenamento adequado, ausência de animais</span></li>
+        </ul>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">1.3 — Curso de Manipulação de Alimentos (Obrigatório)</h3>
+        <div class="alerta atencao">
+          <span class="alerta-icon">⚠️</span>
+          <span>A RDC 216/ANVISA exige que manipuladores de alimentos façam capacitação em <strong>Boas Práticas</strong>. É obrigatório e protege você legalmente.</span>
+        </div>
+        <div class="cards-grid">
+          <div class="card verde"><div class="card-icon">🎓</div><h4>SENAI</h4><p>Cursos presenciais e EAD. Valor: R$ 80 – R$ 250</p></div>
+          <div class="card verde"><div class="card-icon">💻</div><h4>SENAC Online</h4><p>Curso EAD reconhecido. Valor: R$ 60 – R$ 180</p></div>
+          <div class="card verde"><div class="card-icon">🏛️</div><h4>Vigilância Sanitária Municipal</h4><p>Alguns municípios oferecem <strong>gratuitamente</strong></p></div>
+          <div class="card verde"><div class="card-icon">📱</div><h4>SEBRAE</h4><p>Cursos gratuitos online para MEI via plataforma EAD</p></div>
+        </div>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">1.4 — Obrigações Mensais do MEI</h3>
+        <table>
+          <thead><tr><th>Obrigação</th><th>Detalhe</th><th class="td-valor">Valor (2026)</th></tr></thead>
+          <tbody>
+            <tr><td>DAS — INSS + ISS</td><td>Guia de pagamento mensal obrigatória</td><td class="td-valor">~R$ 75,90</td></tr>
+            <tr><td>DASN-SIMEI</td><td>Declaração anual de faturamento (janeiro)</td><td class="td-valor">Gratuito</td></tr>
+            <tr><td>Nota Fiscal</td><td>Emitir NF ao vender para pessoa jurídica</td><td class="td-valor">Gratuito</td></tr>
+          </tbody>
+        </table>
+        <div class="alerta info">
+          <span class="alerta-icon">ℹ️</span>
+          <span>O limite de faturamento do MEI em 2026 é de <strong>R$ 81.000/ano</strong> (R$ 6.750/mês). Acima disso migra para ME — boa notícia quando chegar lá!</span>
+        </div>
+      </div>
+      <div class="page-nav-footer">
+        <button onclick="prevPage()">← Visão Geral</button>
+        <button onclick="nextPage()">Equipamentos →</button>
+      </div>
+    </section>
+
+    <!-- ══════════════ PASSO 2 ══════════════ -->
+    <section class="page" id="passo2" data-title="Estrutura e Equipamentos">
+      <div class="step" data-numero="02">
+        <div class="step-header">
+          <div class="step-icon">🍳</div>
+          <div class="step-title">
+            <h2>Passo 2 — Estrutura Física e Equipamentos</h2>
+            <p>O que comprar, em que ordem e quanto custa</p>
+          </div>
+        </div>
+
+        <div class="alerta atencao">
+          <span class="alerta-icon">💡</span>
+          <span><strong>Estratégia:</strong> Comece com o mínimo viável e reinvista o lucro para expandir. Evite endividamento no início.</span>
+        </div>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">Equipamentos de Produção</h3>
+        <table>
+          <thead><tr><th>Item</th><th>Especificação</th><th>Prioridade</th><th class="td-valor">Faixa de Preço</th></tr></thead>
+          <tbody>
+            <tr><td>🍲 Panela grande e funda</td><td>Alumínio ou inox, min. 12L</td><td>🔴 Essencial</td><td class="td-valor">R$ 80 – R$ 250</td></tr>
+            <tr><td>🛁 Tacho / Fritadeira</td><td>Tacho alumínio 6L ou elétrica</td><td>🔴 Essencial</td><td class="td-valor">R$ 120 – R$ 480</td></tr>
+            <tr><td>🥣 Bowl de alumínio (4 un.)</td><td>Tamanhos variados, 2L a 5L</td><td>🔴 Essencial</td><td class="td-valor">R$ 100 – R$ 200</td></tr>
+            <tr><td>🧊 Freezer horizontal</td><td>Mín. 200L — para estoque</td><td>🔴 Essencial</td><td class="td-valor">R$ 900 – R$ 1.800</td></tr>
+            <tr><td>🍽️ Bancada de alumínio/inox</td><td>90x60cm min.</td><td>🔴 Essencial</td><td class="td-valor">R$ 350 – R$ 800</td></tr>
+            <tr><td>⚖️ Balança digital</td><td>Precisão 1g, cap. 5kg</td><td>🔴 Essencial</td><td class="td-valor">R$ 50 – R$ 120</td></tr>
+            <tr><td>🌡️ Termômetro culinário</td><td>Digital, controle do óleo</td><td>🟡 Importante</td><td class="td-valor">R$ 30 – R$ 80</td></tr>
+            <tr><td>🔥 Forno elétrico</td><td>Para opções assadas e brigadeiros</td><td>🟡 Importante</td><td class="td-valor">R$ 300 – R$ 700</td></tr>
+            <tr><td>🪣 Cesto escorredor</td><td>Para escorrer o óleo</td><td>🟡 Importante</td><td class="td-valor">R$ 40 – R$ 90</td></tr>
+          </tbody>
+        </table>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">Utensílios</h3>
+        <table>
+          <thead><tr><th>Item</th><th>Qtd.</th><th>Prioridade</th><th class="td-valor">Faixa de Preço</th></tr></thead>
+          <tbody>
+            <tr><td>🥄 Espátula de silicone</td><td>2 un.</td><td>🔴 Essencial</td><td class="td-valor">R$ 30 – R$ 60</td></tr>
+            <tr><td>🌀 Fuê de alumínio</td><td>1 un.</td><td>🔴 Essencial</td><td class="td-valor">R$ 20 – R$ 40</td></tr>
+            <tr><td>🥄 Colher de madeira</td><td>2 un.</td><td>🔴 Essencial</td><td class="td-valor">R$ 15 – R$ 30</td></tr>
+            <tr><td>📏 Copo medidor</td><td>1 un.</td><td>🔴 Essencial</td><td class="td-valor">R$ 15 – R$ 30</td></tr>
+            <tr><td>🟫 Formas e moldes</td><td>Kit variado</td><td>🟡 Importante</td><td class="td-valor">R$ 60 – R$ 180</td></tr>
+            <tr><td>📦 Potes para freezer</td><td>Kit 10 un.</td><td>🔴 Essencial</td><td class="td-valor">R$ 40 – R$ 90</td></tr>
+            <tr><td>🧴 Álcool gel 70%</td><td>500ml</td><td>🔴 Essencial</td><td class="td-valor">R$ 15 – R$ 30</td></tr>
+            <tr><td>👆 Luvas descartáveis</td><td>Cx. 100 un.</td><td>🔴 Essencial</td><td class="td-valor">R$ 20 – R$ 40</td></tr>
+            <tr><td>💁 Toucas descartáveis</td><td>Cx. 100 un.</td><td>🔴 Essencial</td><td class="td-valor">R$ 20 – R$ 35</td></tr>
+            <tr><td>👗 Avental impermeável</td><td>1 un.</td><td>🔴 Essencial</td><td class="td-valor">R$ 35 – R$ 70</td></tr>
+            <tr><td>🎞️ Plástico filme</td><td>Rolo 30cm</td><td>🔴 Essencial</td><td class="td-valor">R$ 20 – R$ 40</td></tr>
+            <tr><td>🛍️ Saco picotado</td><td>Rolo</td><td>🔴 Essencial</td><td class="td-valor">R$ 25 – R$ 50</td></tr>
+          </tbody>
+          <tr class="td-total"><td colspan="3"><strong>TOTAL ESTIMADO — ESTRUTURA MÍNIMA</strong></td><td class="td-valor"><strong>R$ 1.910 – R$ 4.243</strong></td></tr>
+        </table>
+
+        <div class="alerta info">
+          <span class="alerta-icon">💡</span>
+          <span><strong>Dica de compra:</strong> Bancada inox e freezer têm ótimas opções no <strong>Mercado Livre</strong> e <strong>OLX</strong> (semi-novos). Utensílios no atacado em lojas como Ceasa, Makro ou distribuidoras locais. Economize até 40%.</span>
+        </div>
+      </div>
+      <div class="page-nav-footer">
+        <button onclick="prevPage()">← Legal</button>
+        <button onclick="nextPage()">Ingredientes →</button>
+      </div>
+    </section>
+
+    <!-- ══════════════ PASSO 3 ══════════════ -->
+    <section class="page" id="passo3" data-title="Ingredientes e Fornecedores">
+      <div class="step" data-numero="03">
+        <div class="step-header">
+          <div class="step-icon">🛒</div>
+          <div class="step-title">
+            <h2>Passo 3 — Ingredientes e Fornecedores</h2>
+            <p>Estoque inicial · Onde comprar · Como controlar custo</p>
+          </div>
+        </div>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">Estoque Inicial de Ingredientes</h3>
+        <table>
+          <thead><tr><th>Ingrediente</th><th>Qtd. Inicial</th><th class="td-valor">Preço Estimado</th></tr></thead>
+          <tbody>
+            <tr><td>Farinha de trigo</td><td>5 kg</td><td class="td-valor">R$ 25 – R$ 40</td></tr>
+            <tr><td>Frango (coxa/peito)</td><td>2 kg</td><td class="td-valor">R$ 20 – R$ 35</td></tr>
+            <tr><td>Queijo mussarela</td><td>1 kg</td><td class="td-valor">R$ 30 – R$ 50</td></tr>
+            <tr><td>Calabresa</td><td>1 kg</td><td class="td-valor">R$ 20 – R$ 38</td></tr>
+            <tr><td>Óleo de soja (fritura)</td><td>5 L</td><td class="td-valor">R$ 40 – R$ 65</td></tr>
+            <tr><td>Cream cheese</td><td>500 g</td><td class="td-valor">R$ 15 – R$ 25</td></tr>
+            <tr><td>Leite condensado (brigadeiro)</td><td>4 latas</td><td class="td-valor">R$ 22 – R$ 36</td></tr>
+            <tr><td>Chocolate em pó / granulado</td><td>500 g + 500 g</td><td class="td-valor">R$ 25 – R$ 40</td></tr>
+            <tr><td>Manteiga / Margarina</td><td>500 g</td><td class="td-valor">R$ 10 – R$ 20</td></tr>
+            <tr><td>Ovos</td><td>1 dúzia</td><td class="td-valor">R$ 15 – R$ 22</td></tr>
+            <tr><td>Sal, alho, temperos</td><td>Kit básico</td><td class="td-valor">R$ 25 – R$ 40</td></tr>
+            <tr><td>Caldo de galinha / legumes</td><td>1 cx.</td><td class="td-valor">R$ 8 – R$ 15</td></tr>
+          </tbody>
+          <tr class="td-total"><td colspan="2"><strong>TOTAL INGREDIENTES INICIAIS</strong></td><td class="td-valor"><strong>R$ 255 – R$ 426</strong></td></tr>
+        </table>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">Onde Comprar</h3>
+        <div class="cards-grid">
+          <div class="card verde"><div class="card-icon">🏪</div><h4>Atacadão / Makro</h4><p>Menor preço por kg. Ideal para farinha, óleo, leite condensado e frango.</p></div>
+          <div class="card verde"><div class="card-icon">🥩</div><h4>Frigorífico local</h4><p>Frango e carnes com melhor preço comprando direto ou em quantidade.</p></div>
+          <div class="card verde"><div class="card-icon">🧀</div><h4>Laticínios / Distribuidora</h4><p>Queijo e cream cheese em bloco (mais barato que fatiado).</p></div>
+          <div class="card verde"><div class="card-icon">🛒</div><h4>Supermercado</h4><p>Para quantidades menores e ingredientes eventuais. Acompanhe promoções semanais.</p></div>
+        </div>
+
+        <div class="alerta atencao">
+          <span class="alerta-icon">📊</span>
+          <span><strong>Controle de custos:</strong> Anote o preço e quantidade de CADA ingrediente usado por receita. Use Google Planilhas ou app <em>ContaAzul MEI</em> para calcular o custo unitário exato.</span>
+        </div>
+      </div>
+      <div class="page-nav-footer">
+        <button onclick="prevPage()">← Equipamentos</button>
+        <button onclick="nextPage()">Embalagem →</button>
+      </div>
+    </section>
+
+    <!-- ══════════════ PASSO 4 ══════════════ -->
+    <section class="page" id="passo4" data-title="Embalagem e Apresentação">
+      <div class="step" data-numero="04">
+        <div class="step-header">
+          <div class="step-icon">📦</div>
+          <div class="step-title">
+            <h2>Passo 4 — Embalagem e Apresentação</h2>
+            <p>Primeira impressão é a que fica — invista em embalagem profissional</p>
+          </div>
+        </div>
+
+        <table>
+          <thead><tr><th>Item</th><th>Uso</th><th>Qtd. Inicial</th><th class="td-valor">Preço Estimado</th></tr></thead>
+          <tbody>
+            <tr><td>Caixa kraft para salgados</td><td>Entrega / delivery</td><td>50 un.</td><td class="td-valor">R$ 60 – R$ 110</td></tr>
+            <tr><td>Bandeja com tampa (PET)</td><td>Porções exposição</td><td>50 un.</td><td class="td-valor">R$ 40 – R$ 80</td></tr>
+            <tr><td>Caixinha para brigadeiros</td><td>Doces / presentes</td><td>30 un.</td><td class="td-valor">R$ 30 – R$ 60</td></tr>
+            <tr><td>Saquinho celofane c/ laço</td><td>Brigadeiros individuais</td><td>100 un.</td><td class="td-valor">R$ 20 – R$ 40</td></tr>
+            <tr><td>Etiquetas personalizadas</td><td>Nome + contato + ingredientes</td><td>200 un.</td><td class="td-valor">R$ 35 – R$ 70</td></tr>
+            <tr><td>Sacola de papel kraft</td><td>Entregas e retirada</td><td>50 un.</td><td class="td-valor">R$ 30 – R$ 60</td></tr>
+            <tr><td>Guardanapos descartáveis</td><td>Cortesia</td><td>1 cx.</td><td class="td-valor">R$ 10 – R$ 20</td></tr>
+          </tbody>
+          <tr class="td-total"><td colspan="3"><strong>TOTAL EMBALAGENS INICIAIS</strong></td><td class="td-valor"><strong>R$ 225 – R$ 440</strong></td></tr>
+        </table>
+
+        <div class="alerta info">
+          <span class="alerta-icon">🎨</span>
+          <span><strong>Identidade visual:</strong> Peça ao Lucas para criar um logotipo simples e consistente. Use as mesmas cores em todos os materiais — etiquetas, stories, cardápio. Isso cria reconhecimento de marca desde o início.</span>
+        </div>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">O que a etiqueta deve conter (Vigilância Sanitária)</h3>
+        <ul class="checklist">
+          <li><div class="check-box"></div><span>Nome do produto e tipo de salgado/doce</span></li>
+          <li><div class="check-box"></div><span>Lista de ingredientes (da maior para menor proporção)</span></li>
+          <li><div class="check-box"></div><span>Peso líquido / quantidade</span></li>
+          <li><div class="check-box"></div><span>Validade: data de fabricação + prazo de consumo</span></li>
+          <li><div class="check-box"></div><span>Nome do responsável + CNPJ MEI</span></li>
+          <li><div class="check-box"></div><span>Instrução de conservação (refrigerado, congelado)</span></li>
+          <li><div class="check-box"></div><span>Alergênicos (glúten, lactose, etc.)</span></li>
+        </ul>
+      </div>
+      <div class="page-nav-footer">
+        <button onclick="prevPage()">← Ingredientes</button>
+        <button onclick="nextPage()">Identidade Visual →</button>
+      </div>
+    </section>
+
+    <!-- ══════════════ PASSO 5 ══════════════ -->
+    <section class="page" id="passo5" data-title="Identidade Visual e Branding">
+      <div class="step" data-numero="05">
+        <div class="step-header">
+          <div class="step-icon">🎨</div>
+          <div class="step-title">
+            <h2>Passo 5 — Identidade Visual e Branding</h2>
+            <p>Logotipo · Logomarca · Peças para anúncios · Cardápio visual</p>
+          </div>
+        </div>
+
+        <div style="display:inline-flex; align-items:center; gap:10px; background:linear-gradient(135deg,var(--laranja),var(--dourado)); color:white; border-radius:30px; padding:8px 20px; margin-bottom:22px; font-size:0.9rem; font-weight:700; box-shadow:0 4px 14px rgba(232,93,4,0.3);">
+          <span style="font-size:1.1rem;">🎯</span>
+          <span>Responsável: <strong>RegiaJG — Lucas</strong></span>
+        </div>
+
+        <div class="alerta info">
+          <span class="alerta-icon">ℹ️</span>
+          <span>A identidade visual deve ser criada <strong>antes</strong> de abrir o Instagram, cadastrar no iFood e imprimir etiquetas — assim tudo nasce com a mesma cara e gera reconhecimento de marca desde o primeiro dia.</span>
+        </div>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">5.1 — Logotipo e Logomarca</h3>
+        <ul class="checklist">
+          <li><div class="check-box"></div><span><strong>Definir nome da marca</strong> — curto, fácil de pronunciar e lembrar</span></li>
+          <li><div class="check-box"></div><span><strong>Logotipo</strong> (símbolo/ícone gráfico) — arquivo PNG transparente + SVG</span></li>
+          <li><div class="check-box"></div><span><strong>Logomarca</strong> (nome com tipografia) — versão horizontal e quadrada</span></li>
+          <li><div class="check-box"></div><span><strong>Paleta de cores</strong> — 2 cores principais + 1 de apoio, mesmas em tudo</span></li>
+          <li><div class="check-box"></div><span><strong>Tipografia</strong> — 1 fonte títulos + 1 para texto. Salvar PDF de referência.</span></li>
+          <li><div class="check-box"></div><span>Versão <strong>clara</strong> (fundo escuro) e versão <strong>escura</strong> (fundo claro)</span></li>
+          <li><div class="check-box"></div><span>Versão <strong>monocromática</strong> (para carimbos e impressões simples)</span></li>
+        </ul>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">5.2 — Fotos dos Produtos</h3>
+        <ul class="checklist">
+          <li><div class="check-box"></div><span>Sessão fotográfica com boa luz natural ou artificial difusa</span></li>
+          <li><div class="check-box"></div><span>Fundo limpo e neutro (madeira clara, mármore branco ou papel kraft)</span></li>
+          <li><div class="check-box"></div><span>Fotos individuais de cada produto do cardápio (para iFood + Instagram)</span></li>
+          <li><div class="check-box"></div><span>Fotos de conjunto / mesa posta (para posts carrossel e capas)</span></li>
+          <li><div class="check-box"></div><span>Vídeo curto de 15–30s mostrando o produto sendo feito (para Reels)</span></li>
+          <li><div class="check-box"></div><span>Fotos em <strong>1:1</strong> (feed Instagram) e <strong>9:16</strong> (Stories/Reels)</span></li>
+        </ul>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">5.3 — Peças Estáticas para Anúncios</h3>
+        <table>
+          <thead><tr><th>Peça</th><th>Formato / Tamanho</th><th>Uso</th></tr></thead>
+          <tbody>
+            <tr><td>Post quadrado</td><td>1080 × 1080 px</td><td>Feed Instagram / Facebook</td></tr>
+            <tr><td>Story / Reels cover</td><td>1080 × 1920 px</td><td>Stories Instagram</td></tr>
+            <tr><td>Capa de destaque Instagram</td><td>1080 × 1080 px</td><td>Ícones dos Destaques</td></tr>
+            <tr><td>Capa do WhatsApp Business</td><td>1600 × 768 px</td><td>Perfil do WhatsApp</td></tr>
+            <tr><td>Banner iFood</td><td>1230 × 410 px</td><td>Capa da loja no iFood</td></tr>
+            <tr><td>Anúncio estático Meta Ads</td><td>1200 × 628 px + 1080 × 1920 px</td><td>Campanhas pagas futuras</td></tr>
+            <tr><td>Template de promoção</td><td>1080 × 1080 px editável</td><td>Ofertas semanais via Canva</td></tr>
+          </tbody>
+        </table>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">5.4 — Cardápio Visual</h3>
+        <ul class="checklist">
+          <li><div class="check-box"></div><span><strong>Cardápio em imagem</strong> (JPG/PNG) — para enviar no WhatsApp e Destaques do Instagram</span></li>
+          <li><div class="check-box"></div><span><strong>Cardápio em PDF</strong> — para enviar via link ou imprimir</span></li>
+          <li><div class="check-box"></div><span>Incluir: foto + nome + recheio + preço por dúzia/unidade</span></li>
+          <li><div class="check-box"></div><span>Seções: Salgados Fritos · Salgados Assados · Doces · Combos</span></li>
+        </ul>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">5.5 — Checklist de Entrega para o Lucas</h3>
+        <div style="background:var(--cinza-claro); border-radius:12px; padding:20px; border:2px dashed var(--dourado);">
+          <div class="dois-paineis">
+            <div class="painel">
+              <h4>Arquivos de Identidade</h4>
+              <ul>
+                <li>Logo PNG transparente (claro e escuro)</li>
+                <li>Logo SVG (vetorial)</li>
+                <li>PDF de marca (cores + fontes)</li>
+                <li>Paleta de cores em HEX/RGB</li>
+              </ul>
+            </div>
+            <div class="painel">
+              <h4>Peças Prontas</h4>
+              <ul>
+                <li>5 templates de post Instagram</li>
+                <li>3 templates de Stories</li>
+                <li>Cardápio visual (imagem + PDF)</li>
+                <li>Capa WhatsApp + Banner iFood</li>
+                <li>1 peça de anúncio estático (Meta Ads)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page-nav-footer">
+        <button onclick="prevPage()">← Embalagem</button>
+        <button onclick="nextPage()">Produção →</button>
+      </div>
+    </section>
+
+    <!-- ══════════════ PASSO 6 ══════════════ -->
+    <section class="page" id="passo6" data-title="Processo de Produção">
+      <div class="step" data-numero="06">
+        <div class="step-header">
+          <div class="step-icon">⚙️</div>
+          <div class="step-title">
+            <h2>Passo 6 — Processo de Produção</h2>
+            <p>Fluxo de trabalho para produção eficiente e higiênica</p>
+          </div>
+        </div>
+        <div class="timeline">
+          <div class="tl-item"><h4>01 — Planejamento (dia anterior)</h4><p>Calcule a demanda prevista. Separe os ingredientes. Organize o espaço de trabalho.</p></div>
+          <div class="tl-item"><h4>02 — Higienização</h4><p>Lave as mãos. Vista avental, touca e luvas. Higienize a bancada com álcool 70%.</p></div>
+          <div class="tl-item"><h4>03 — Preparo dos recheios</h4><p>Cozinhe e tempere os recheios. Deixe esfriar antes de usar — recheios quentes amolecem a massa.</p></div>
+          <div class="tl-item"><h4>04 — Montagem e modelagem</h4><p>Prepare a massa. Use a balança para padronizar o tamanho — clientes percebem consistência.</p></div>
+          <div class="tl-item"><h4>05 — Fritura ou Forno</h4><p>Mantenha o óleo a 180°C. Frite em pequenas levas. Para assados: 200°C por 20-25 min.</p></div>
+          <div class="tl-item"><h4>06 — Resfriamento e Estocagem</h4><p>Congele os salgados crus — asse/frite sob demanda para garantir frescor. Identifique cada pote com data e tipo.</p></div>
+          <div class="tl-item"><h4>07 — Embalagem e Etiquetagem</h4><p>Embale na temperatura correta. Cole etiqueta com data e validade. Organize por pedido.</p></div>
+          <div class="tl-item"><h4>08 — Doces e Brigadeiros</h4><p>Produzir sempre em sessão separada dos salgados — ambiente limpo, utensílios higienizados à parte. Deixar esfriar completamente antes de modelar. Embalar individualmente assim que prontos para preservar textura e evitar contaminação cruzada de odores.</p></div>
+        </div>
+        <div class="alerta sucesso">
+          <span class="alerta-icon">❄️</span>
+          <span><strong>Dica de ouro — Congelar cru:</strong> Modele grandes lotes e congele crus. Na hora da entrega, asse ou frite em menos de 20 minutos. Reduz desperdício e permite escalar sem estresse.</span>
+        </div>
+      </div>
+      <div class="page-nav-footer">
+        <button onclick="prevPage()">← Identidade Visual</button>
+        <button onclick="nextPage()">Precificação →</button>
+      </div>
+    </section>
+
+    <!-- ══════════════ PASSO 7 ══════════════ -->
+    <section class="page" id="passo7" data-title="Precificação e Cardápio">
+      <div class="step" data-numero="07">
+        <div class="step-header">
+          <div class="step-icon">💰</div>
+          <div class="step-title">
+            <h2>Passo 7 — Precificação e Cardápio</h2>
+            <p>Como calcular o preço certo para lucrar desde o primeiro dia</p>
+          </div>
+        </div>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">Fórmula de Precificação</h3>
+        <div class="dois-paineis">
+          <div class="painel">
+            <h4>Custos Diretos</h4>
+            <ul><li>Ingredientes (por dúzia)</li><li>Embalagem (por pedido)</li><li>Etiqueta</li></ul>
+          </div>
+          <div class="painel">
+            <h4>Custos Indiretos (rateio)</h4>
+            <ul><li>Gás: ~R$ 2,00–3,00 por dúzia</li><li>Energia elétrica: ~R$ 1,00 por dúzia</li><li>Mão de obra sua (valorize!)</li></ul>
+          </div>
+        </div>
+
+        <div style="background: linear-gradient(135deg, #fff8f0, #ffe8cc); border-radius: 14px; padding: 24px; margin: 20px 0; border: 2px solid var(--dourado);">
+          <h4 style="color: var(--laranja); margin-bottom: 14px; font-size: 1rem;">📐 Fórmula Prática</h4>
+          <p style="font-size: 1.05rem; font-weight: 600; color: var(--cinza-escuro); font-family: monospace; background: white; padding: 14px; border-radius: 8px;">
+            Preço de Venda = (Custo Total) ÷ (1 – Margem de Lucro Desejada)
+          </p>
+          <p style="margin-top: 10px; font-size: 0.9rem; color: var(--cinza-medio);">
+            Exemplo: custo dúzia = R$ 12,00 / com margem 60% → R$ 12,00 ÷ 0,40 = <strong style="color: var(--laranja);">R$ 30,00 por dúzia</strong>
+          </p>
+        </div>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">Tabela de Preços Sugeridos (mercado 2026)</h3>
+        <table>
+          <thead><tr><th>Produto</th><th>Custo Estimado</th><th>Preço Sugerido</th><th class="td-valor">Margem Aprox.</th></tr></thead>
+          <tbody>
+            <tr><td>Mini salgados fritos (dúzia)</td><td>R$ 8 – R$ 12</td><td><strong>R$ 28 – R$ 40</strong></td><td class="td-valor">~65%</td></tr>
+            <tr><td>Mini salgados assados (dúzia)</td><td>R$ 7 – R$ 10</td><td><strong>R$ 25 – R$ 35</strong></td><td class="td-valor">~65%</td></tr>
+            <tr><td>Coxinha grande (un.)</td><td>R$ 1,50 – R$ 2,50</td><td><strong>R$ 5 – R$ 8</strong></td><td class="td-valor">~65%</td></tr>
+            <tr><td>Brigadeiro simples (un.)</td><td>R$ 0,60 – R$ 0,90</td><td><strong>R$ 2 – R$ 3</strong></td><td class="td-valor">~68%</td></tr>
+            <tr><td>Brigadeiro gourmet (un.)</td><td>R$ 1,00 – R$ 1,50</td><td><strong>R$ 4 – R$ 6</strong></td><td class="td-valor">~70%</td></tr>
+            <tr><td>Caixa festa 50 salgados</td><td>R$ 35 – R$ 55</td><td><strong>R$ 120 – R$ 180</strong></td><td class="td-valor">~65%</td></tr>
+            <tr><td>Caixa festa 100 salgados</td><td>R$ 65 – R$ 100</td><td><strong>R$ 220 – R$ 320</strong></td><td class="td-valor">~65%</td></tr>
+          </tbody>
+        </table>
+        <div class="alerta perigo">
+          <span class="alerta-icon">🚫</span>
+          <span><strong>Não caia na armadilha do preço baixo!</strong> Competir por preço corrói sua margem e desvaloriza o produto. Diferencie por qualidade, capricho na apresentação e atendimento rápido.</span>
+        </div>
+      </div>
+      <div class="page-nav-footer">
+        <button onclick="prevPage()">← Produção</button>
+        <button onclick="nextPage()">iFood →</button>
+      </div>
+    </section>
+
+    <!-- ══════════════ PASSO 8 ══════════════ -->
+    <section class="page" id="passo8" data-title="iFood: Configuração e Operação">
+      <div class="step" data-numero="08">
+        <div class="step-header">
+          <div class="step-icon">🚴</div>
+          <div class="step-title">
+            <h2>Passo 8 — iFood: Configuração e Operação</h2>
+            <p>Canal de vendas principal para captar clientes iniciais</p>
+          </div>
+        </div>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">Como se Cadastrar</h3>
+        <ul class="checklist">
+          <li><div class="check-box"></div><span>Acesse <strong>parceiros.ifood.com.br/restaurante</strong> e clique em "Cadastre sua loja"</span></li>
+          <li><div class="check-box"></div><span>Selecione o tipo: <strong>Restaurante</strong></span></li>
+          <li><div class="check-box"></div><span>Informe nome da loja, telefone, e-mail e endereço</span></li>
+          <li><div class="check-box"></div><span>Envie documentos: <strong>CNPJ (MEI), CPF, comprovante de endereço</strong></span></li>
+          <li><div class="check-box"></div><span>Foto da fachada / espaço de produção</span></li>
+          <li><div class="check-box"></div><span>Aguarde aprovação (1–5 dias úteis)</span></li>
+          <li><div class="check-box"></div><span>Monte o cardápio com fotos de qualidade</span></li>
+        </ul>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">Planos iFood (2026)</h3>
+        <table>
+          <thead><tr><th>Plano</th><th>Comissão</th><th>Entrega</th><th>Mensalidade</th><th class="td-valor">Melhor Para</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Básico</strong></td><td>12% + 3,2% pagamento</td><td>Você entrega</td><td>Grátis (até R$ 1.800/mês) depois R$ 110/mês</td><td class="td-valor">Início</td></tr>
+            <tr><td><strong>Entrega iFood</strong></td><td>~23% + 3,2%</td><td>iFood entrega</td><td>Incluso</td><td class="td-valor">Escalamento</td></tr>
+          </tbody>
+        </table>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">Cálculo do Impacto do iFood no Preço</h3>
+        <div style="background: var(--cinza-claro); border-radius: 12px; padding: 20px; font-size: 0.93rem;">
+          <p><strong>Exemplo:</strong> Dúzia de salgados a R$ 35,00 no Plano Básico:</p>
+          <ul style="list-style: none; margin-top: 10px;">
+            <li style="padding: 4px 0;">• Valor do pedido: <strong>R$ 35,00</strong></li>
+            <li style="padding: 4px 0;">• Comissão iFood 12%: <strong>− R$ 4,20</strong></li>
+            <li style="padding: 4px 0;">• Taxa pagamento 3,2%: <strong>− R$ 1,12</strong></li>
+            <li style="padding: 4px 0; border-top: 2px solid var(--laranja); margin-top: 8px; font-size: 1rem;">• <strong>Você recebe: R$ 29,68</strong> (ainda lucrativo!)</li>
+          </ul>
+        </div>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">Dicas para Decolar no iFood</h3>
+        <div class="cards-grid">
+          <div class="card"><div class="card-icon">📸</div><h4>Fotos profissionais</h4><p>A foto é o que vende. Boa iluminação e fundo limpo. Lucas pode ajudar.</p></div>
+          <div class="card"><div class="card-icon">⭐</div><h4>Avaliações iniciais</h4><p>Peça para família e amigos deixarem avaliação 5 estrelas nos primeiros dias.</p></div>
+          <div class="card"><div class="card-icon">🏷️</div><h4>Promoção de lançamento</h4><p>Ofereça 10% de desconto nos primeiros 30 dias para atrair avaliações.</p></div>
+          <div class="card"><div class="card-icon">⏰</div><h4>Horários estratégicos</h4><p>Fique online nos picos: 10h–12h e 17h–19h.</p></div>
+        </div>
+      </div>
+      <div class="page-nav-footer">
+        <button onclick="prevPage()">← Precificação</button>
+        <button onclick="nextPage()">Tráfego Orgânico →</button>
+      </div>
+    </section>
+
+    <!-- ══════════════ PASSO 9 ══════════════ -->
+    <section class="page" id="passo9" data-title="Tráfego Orgânico">
+      <div class="step" data-numero="09">
+        <div class="step-header">
+          <div class="step-icon">📱</div>
+          <div class="step-title">
+            <h2>Passo 9 — Tráfego Orgânico</h2>
+            <p>Instagram · WhatsApp Business · Google Meu Negócio — tudo gratuito</p>
+          </div>
+        </div>
+
+        <div class="alerta sucesso">
+          <span class="alerta-icon">🆓</span>
+          <span>Todo o canal orgânico é <strong>gratuito</strong>. Consistência e qualidade de conteúdo substituem investimento financeiro no início.</span>
+        </div>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">Instagram — Configuração Inicial</h3>
+        <ul class="checklist">
+          <li><div class="check-box"></div><span>Crie conta como <strong>Perfil Comercial</strong> (não pessoal)</span></li>
+          <li><div class="check-box"></div><span>Nome de usuário curto, sem números, fácil de lembrar</span></li>
+          <li><div class="check-box"></div><span>Bio: o que vende + cidade + link do WhatsApp + link iFood</span></li>
+          <li><div class="check-box"></div><span>Foto de perfil: logotipo com boa qualidade</span></li>
+          <li><div class="check-box"></div><span>Destaques: "Cardápio", "Pedidos", "Depoimentos", "Como pedir"</span></li>
+        </ul>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">Calendário de Conteúdo Semanal</h3>
+        <table>
+          <thead><tr><th>Dia</th><th>Tipo de Conteúdo</th><th>Formato</th></tr></thead>
+          <tbody>
+            <tr><td>Segunda</td><td>Cardápio da semana / promoção</td><td>Story + Post</td></tr>
+            <tr><td>Terça</td><td>Bastidores da produção</td><td>Reels (15-30s)</td></tr>
+            <tr><td>Quinta</td><td>Depoimento de cliente / avaliação</td><td>Story</td></tr>
+            <tr><td>Sexta</td><td>Chamada para pedidos do fim de semana</td><td>Reels + Story</td></tr>
+            <tr><td>Sábado</td><td>Foto do produto final / entrega</td><td>Post carrossel</td></tr>
+          </tbody>
+        </table>
+
+        <div class="alerta info">
+          <span class="alerta-icon">🎬</span>
+          <span><strong>Reels são prioridade em 2026!</strong> O algoritmo entrega Reels para pessoas que não te seguem. Um vídeo de 15-30s mostrando a fritura ou o brigadeiro pronto pode viralizar localmente sem gastar nada.</span>
+        </div>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">WhatsApp Business</h3>
+        <ul class="checklist">
+          <li><div class="check-box"></div><span>Baixe o <strong>WhatsApp Business</strong> — número separado do pessoal</span></li>
+          <li><div class="check-box"></div><span>Configure o <strong>Catálogo</strong> com fotos e preços</span></li>
+          <li><div class="check-box"></div><span>Ative <strong>Mensagem de Ausência</strong> fora do horário de atendimento</span></li>
+          <li><div class="check-box"></div><span>Configure <strong>Respostas Rápidas</strong>: cardápio, formas de pagamento, área de entrega</span></li>
+          <li><div class="check-box"></div><span>Crie <strong>Lista de Transmissão</strong> para clientes recorrentes</span></li>
+        </ul>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">Google Meu Negócio (gratuito e poderoso)</h3>
+        <ul class="checklist">
+          <li><div class="check-box"></div><span>Acesse <strong>business.google.com</strong> e cadastre o negócio</span></li>
+          <li><div class="check-box"></div><span>Categoria: "Salgaderia" ou "Serviço de entrega de alimentos"</span></li>
+          <li><div class="check-box"></div><span>Adicione fotos dos produtos, horário e número de WhatsApp</span></li>
+          <li><div class="check-box"></div><span>Peça avaliações no Google para aparecer em buscas locais</span></li>
+        </ul>
+      </div>
+      <div class="page-nav-footer">
+        <button onclick="prevPage()">← iFood</button>
+        <button onclick="nextPage()">Fase 2: Pago →</button>
+      </div>
+    </section>
+
+    <!-- ══════════════ PASSO 10 ══════════════ -->
+    <section class="page" id="passo10" data-title="Fase 2: Tráfego Pago e Página Mestre">
+      <div class="step" data-numero="10">
+        <div class="step-header">
+          <div class="step-icon">🚀</div>
+          <div class="step-title">
+            <h2>Passo 10 — Fase 2: Tráfego Pago e Página Mestre</h2>
+            <p>Para quando você já tiver fluxo de caixa e histórico de vendas</p>
+          </div>
+        </div>
+
+        <div class="alerta atencao">
+          <span class="alerta-icon">⚠️</span>
+          <span><strong>Ative esta fase somente após o mês 3.</strong> Primeiro valide o produto, construa avaliações e tenha capital de giro. Tráfego pago sem produto validado é dinheiro jogado fora.</span>
+        </div>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">Página Mestre (Landing Page)</h3>
+        <div class="cards-grid">
+          <div class="card azul"><div class="card-icon">🖥️</div><h4>Linktree (gratuito)</h4><p>Página com todos os links: iFood, WhatsApp, Instagram, cardápio PDF</p></div>
+          <div class="card azul"><div class="card-icon">🌐</div><h4>Canva Sites (gratuito)</h4><p>Landing page visual, sem código. Integra WhatsApp e links externos</p></div>
+          <div class="card azul"><div class="card-icon">📝</div><h4>Notion (gratuito)</h4><p>Cardápio digital com fotos e botão de pedido via WhatsApp</p></div>
+          <div class="card azul"><div class="card-icon">💻</div><h4>Site próprio (futuro)</h4><p>WordPress + WooCommerce. R$ 200–500/ano (hospedagem + domínio)</p></div>
+        </div>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">Tráfego Pago — Como Começar</h3>
+        <table>
+          <thead><tr><th>Plataforma</th><th>Orçamento Inicial</th><th>Objetivo</th></tr></thead>
+          <tbody>
+            <tr><td>Meta Ads (Instagram/Facebook)</td><td>R$ 300–500/mês</td><td>Alcance local, awareness e pedidos via WhatsApp</td></tr>
+            <tr><td>Google Ads (pesquisa local)</td><td>R$ 200–400/mês</td><td>Capturar busca ativa: "salgados [cidade]"</td></tr>
+            <tr><td>iFood Ads</td><td>R$ 100–300/mês</td><td>Aparecer no topo do feed iFood na sua região</td></tr>
+          </tbody>
+        </table>
+
+        <div class="dois-paineis">
+          <div class="painel">
+            <h4>Tipo de anúncio que funciona</h4>
+            <ul><li>Vídeo do processo de produção</li><li>Antes e depois do produto</li><li>Depoimento de cliente em vídeo</li><li>Oferta especial com prazo</li></ul>
+          </div>
+          <div class="painel">
+            <h4>Segmentação recomendada</h4>
+            <ul><li>Raio de 10–15 km do endereço</li><li>Idade: 25–50 anos</li><li>Interesses: culinária, festas, eventos</li><li>Horário: 10h–12h e 16h–19h</li></ul>
+          </div>
+        </div>
+      </div>
+      <div class="page-nav-footer">
+        <button onclick="prevPage()">← Tráfego Orgânico</button>
+        <button onclick="nextPage()">B2B e Eventos →</button>
+      </div>
+    </section>
+
+    <!-- ══════════════ B2B E EVENTOS ══════════════ -->
+    <section class="page" id="b2b" data-title="B2B e Eventos">
+      <div class="step" data-numero="">
+        <div class="step-header">
+          <div class="step-icon">🤝</div>
+          <div class="step-title">
+            <h2>B2B e Eventos</h2>
+            <p>Festas · Corporativo · Buffets · Alto ticket médio</p>
+          </div>
+        </div>
+
+        <div class="alerta sucesso">
+          <span class="alerta-icon">💡</span>
+          <span>Uma única encomenda de festa de 200 pessoas pode valer mais que um mês inteiro de vendas no iFood. Esse canal tem o maior ticket médio do negócio e quase zero custo de aquisição — vem por indicação.</span>
+        </div>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">Tipos de Clientes B2B</h3>
+        <div class="cards-grid">
+          <div class="card"><div class="card-icon">🎂</div><h4>Festas infantis e de adulto</h4><p>Maior volume. Pedidos de 100–500 unidades. Fechados com até 1 semana de antecedência.</p></div>
+          <div class="card"><div class="card-icon">🏢</div><h4>Empresas e escritórios</h4><p>Confraternizações, coffee breaks e reuniões. Recorrência mensal possível.</p></div>
+          <div class="card"><div class="card-icon">💒</div><h4>Casamentos e formaturas</h4><p>Ticket altíssimo. Exige mais antecedência (semanas) e apresentação impecável.</p></div>
+          <div class="card"><div class="card-icon">🍽️</div><h4>Buffets e cerimoniais</h4><p>Parceria fixa como fornecedor. Volumes regulares. Negocie preço por volume.</p></div>
+        </div>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">Precificação para Eventos (diferente do varejo)</h3>
+        <div style="background: linear-gradient(135deg, #fff8f0, #ffe8cc); border-radius: 14px; padding: 24px; margin: 16px 0; border: 2px solid var(--dourado);">
+          <h4 style="color: var(--laranja); margin-bottom: 12px; font-size: 0.95rem;">📐 Fórmula para Evento</h4>
+          <p style="font-family: monospace; background: white; padding: 12px; border-radius: 8px; font-size: 0.93rem;">
+            Preço Evento = (Custo ingredientes + Embalagem especial + Deslocamento + Horas de produção × valor/hora) × fator margem
+          </p>
+          <p style="margin-top: 10px; font-size: 0.85rem; color: var(--cinza-medio);">O fator margem para eventos pode ser menor (1,8×) porque o volume compensa — mas nunca abra mão do custo da mão de obra.</p>
+        </div>
+
+        <table>
+          <thead><tr><th>Porte do Evento</th><th>Qtd. Estimada</th><th>Preço Sugerido</th><th class="td-valor">Ticket Estimado</th></tr></thead>
+          <tbody>
+            <tr><td>Festa pequena (30 pessoas)</td><td>100–150 un.</td><td>R$ 1,80–2,50/un.</td><td class="td-valor">R$ 180 – R$ 375</td></tr>
+            <tr><td>Festa média (80 pessoas)</td><td>250–350 un.</td><td>R$ 1,60–2,20/un.</td><td class="td-valor">R$ 400 – R$ 770</td></tr>
+            <tr><td>Festa grande (150+ pessoas)</td><td>500–800 un.</td><td>R$ 1,40–2,00/un.</td><td class="td-valor">R$ 700 – R$ 1.600</td></tr>
+            <tr><td>Coffee break corporativo</td><td>50–100 un.</td><td>R$ 2,00–3,50/un.</td><td class="td-valor">R$ 100 – R$ 350</td></tr>
+          </tbody>
+        </table>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">Como Captar Clientes para Eventos</h3>
+        <ul class="checklist">
+          <li><div class="check-box"></div><span>Entre em grupos de WhatsApp locais de festas, decoração e eventos</span></li>
+          <li><div class="check-box"></div><span>Cadastre-se em sites de fornecedores de festa (Casamentos.com.br, Noivos.com.br)</span></li>
+          <li><div class="check-box"></div><span>Visite cerimoniais e salões de festa da região — deixe cardápio físico</span></li>
+          <li><div class="check-box"></div><span>Faça parceria com decoradoras e fotógrafas de festas (elas indicam fornecedores)</span></li>
+          <li><div class="check-box"></div><span>Crie um post específico no Instagram: "Fazemos encomendas para festas 🎉" com preço por faixa</span></li>
+          <li><div class="check-box"></div><span>Ofereça degustação gratuita para buffets e cerimoniais parceiros</span></li>
+        </ul>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">Proposta Comercial — O que incluir</h3>
+        <ul class="checklist">
+          <li><div class="check-box"></div><span>Nome e data do evento</span></li>
+          <li><div class="check-box"></div><span>Cardápio selecionado com descrição de cada item</span></li>
+          <li><div class="check-box"></div><span>Quantidade total e preço unitário</span></li>
+          <li><div class="check-box"></div><span>Valor total + condição de pagamento (50% sinal, 50% na entrega)</span></li>
+          <li><div class="check-box"></div><span>Prazo de confirmação do pedido (mínimo 72h antes)</span></li>
+          <li><div class="check-box"></div><span>Política de cancelamento (sinal não reembolsável com menos de 48h)</span></li>
+          <li><div class="check-box"></div><span>Contato e assinatura</span></li>
+        </ul>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">Checklist de Evento</h3>
+        <div class="dois-paineis">
+          <div class="painel">
+            <h4>Antes (D-3 a D-1)</h4>
+            <ul>
+              <li>Confirmar pedido e pagamento do sinal</li>
+              <li>Comprar ingredientes extras</li>
+              <li>Produzir e congelar os salgados crus</li>
+              <li>Separar embalagem especial</li>
+              <li>Confirmar horário e endereço de entrega</li>
+            </ul>
+          </div>
+          <div class="painel">
+            <h4>No Dia</h4>
+            <ul>
+              <li>Assar/fritar no prazo certo (máx. 2h antes)</li>
+              <li>Embalar ainda quentes com ventilação</li>
+              <li>Etiquetar cada tipo claramente</li>
+              <li>Fotografar a entrega (para portfolio)</li>
+              <li>Pedir avaliação e foto no dia da festa</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="page-nav-footer">
+        <button onclick="prevPage()">← Fase 2: Pago</button>
+        <button onclick="nextPage()">Linha de Congelados →</button>
+      </div>
+    </section>
+
+    <!-- ══════════════ CONGELADOS ══════════════ -->
+    <section class="page" id="congelados" data-title="Linha de Congelados">
+      <div class="step" data-numero="">
+        <div class="step-header">
+          <div class="step-icon">❄️</div>
+          <div class="step-title">
+            <h2>Linha de Congelados</h2>
+            <p>Salgados crus prontos para assar em casa — canal de venda complementar</p>
+          </div>
+        </div>
+
+        <div class="alerta info">
+          <span class="alerta-icon">💡</span>
+          <span>O mercado de congelados artesanais cresceu muito no Brasil pós-2020. Vender salgados <strong>crus e congelados</strong> é um canal completamente diferente do delivery quente — menor logística, maior prazo de validade e um público diferente (famílias, escritórios, estoque doméstico).</span>
+        </div>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">Por que Apostar em Congelados?</h3>
+        <div class="cards-grid">
+          <div class="card verde"><div class="card-icon">📦</div><h4>Sem urgência de entrega</h4><p>Pode produzir em lote e vender ao longo da semana. Menos pressão operacional.</p></div>
+          <div class="card verde"><div class="card-icon">⏳</div><h4>Validade maior</h4><p>Congelados crus duram de 30 a 90 dias. Menos desperdício e mais flexibilidade.</p></div>
+          <div class="card verde"><div class="card-icon">🎯</div><h4>Público diferente</h4><p>Mães, donas de casa, escritórios que querem praticidade — não concorre diretamente com o iFood.</p></div>
+          <div class="card verde"><div class="card-icon">💰</div><h4>Ticket diferente</h4><p>Pedidos maiores (5–10 dúzias de uma vez). Cliente compra estoque, não apenas uma refeição.</p></div>
+        </div>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">O que Vender na Linha Congelada</h3>
+        <table>
+          <thead><tr><th>Produto</th><th>Formato</th><th>Validade Congelado</th><th class="td-valor">Preço Sugerido</th></tr></thead>
+          <tbody>
+            <tr><td>Mini salgados crus (mix)</td><td>Bandeja 20 un.</td><td>60 dias</td><td class="td-valor">R$ 28 – R$ 38</td></tr>
+            <tr><td>Coxinha grande crua</td><td>Pacote 12 un.</td><td>60 dias</td><td class="td-valor">R$ 40 – R$ 55</td></tr>
+            <tr><td>Enroladinho de salsicha cru</td><td>Pacote 20 un.</td><td>45 dias</td><td class="td-valor">R$ 25 – R$ 35</td></tr>
+            <tr><td>Kit festa congelado</td><td>100 un. mix</td><td>60 dias</td><td class="td-valor">R$ 130 – R$ 180</td></tr>
+          </tbody>
+        </table>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">Embalagem e Etiquetagem para Congelados</h3>
+        <ul class="checklist">
+          <li><div class="check-box"></div><span>Use <strong>embalagem própria para congelados</strong> — saco plástico resistente ao frio ou bandeja com filme stretch</span></li>
+          <li><div class="check-box"></div><span>Etiqueta obrigatória: nome, ingredientes, validade, instrução de uso ("Asse a 200°C por 25 min. sem descongelar")</span></li>
+          <li><div class="check-box"></div><span>Indicar <strong>"Não recongelar após descongelado"</strong> na embalagem</span></li>
+          <li><div class="check-box"></div><span>Cada peça separada por papel manteiga dentro da embalagem para não grudar</span></li>
+          <li><div class="check-box"></div><span>Caixa isotérmica para entrega (mantém temperatura por 2–4h)</span></li>
+        </ul>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">Canais de Venda para Congelados</h3>
+        <div class="cards-grid">
+          <div class="card"><div class="card-icon">💬</div><h4>WhatsApp</h4><p>Canal principal. Lista de transmissão com clientes recorrentes. Pedido mínimo 3 dúzias.</p></div>
+          <div class="card"><div class="card-icon">📱</div><h4>Instagram</h4><p>Post semanal: "Congelados disponíveis essa semana — garanta o seu!" com foto e preço.</p></div>
+          <div class="card"><div class="card-icon">🛒</div><h4>iFood (categoria congelados)</h4><p>Cadastre produtos na aba de congelados — entrega agendada, sem urgência.</p></div>
+          <div class="card"><div class="card-icon">🏪</div><h4>Mercadinhos e mercearias locais</h4><p>Consignação ou venda direta. Boa vitrine local com baixo esforço de entrega.</p></div>
+        </div>
+
+        <div class="alerta atencao">
+          <span class="alerta-icon">🚀</span>
+          <span><strong>Como começar:</strong> Antes de criar uma linha nova, teste com os clientes que já te compram. Mande mensagem para 10 clientes recorrentes: "Estou pensando em vender salgados congelados crus — você compraria?" A resposta vai dizer se vale investir.</span>
+        </div>
+      </div>
+      <div class="page-nav-footer">
+        <button onclick="prevPage()">← B2B e Eventos</button>
+        <button onclick="nextPage()">Gestão Financeira →</button>
+      </div>
+    </section>
+
+    <!-- ══════════════ FINANCEIRO ══════════════ -->
+    <section class="page" id="financeiro" data-title="Gestão Financeira">
+      <div class="step" data-numero="">
+        <div class="step-header">
+          <div class="step-icon">📊</div>
+          <div class="step-title">
+            <h2>Gestão Financeira</h2>
+            <p>Separar finanças · Controlar caixa · Formas de pagamento · Sazonalidade</p>
+          </div>
+        </div>
+
+        <div class="alerta perigo">
+          <span class="alerta-icon">🚫</span>
+          <span><strong>Erro mais comum:</strong> misturar o dinheiro do negócio com o pessoal. Isso impossibilita saber se você está lucrando e pode derrubar o MEI em pouco tempo.</span>
+        </div>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">Separação de Finanças</h3>
+        <ul class="checklist">
+          <li><div class="check-box"></div><span>Abra uma <strong>conta PJ gratuita</strong> exclusiva (Nubank PJ, Inter PJ, C6, Mercado Pago)</span></li>
+          <li><div class="check-box"></div><span>Todo dinheiro de venda entra na conta PJ — sem exceção</span></li>
+          <li><div class="check-box"></div><span>Pague todos os custos do negócio pela conta PJ</span></li>
+          <li><div class="check-box"></div><span>Defina um <strong>"pró-labore"</strong> fixo para se pagar — o restante fica no caixa do negócio</span></li>
+        </ul>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">Controle de Caixa (Planilha Simples)</h3>
+        <table>
+          <thead><tr><th>Coluna</th><th>O que registrar</th></tr></thead>
+          <tbody>
+            <tr><td>Data</td><td>Dia da receita ou despesa</td></tr>
+            <tr><td>Descrição</td><td>Ex: "Venda 2 dúzias coxinha", "Compra farinha 5kg"</td></tr>
+            <tr><td>Entrada (R$)</td><td>Todo dinheiro que entrou</td></tr>
+            <tr><td>Saída (R$)</td><td>Todo custo pago</td></tr>
+            <tr><td>Saldo (R$)</td><td>Entrada – Saída acumulado</td></tr>
+          </tbody>
+        </table>
+        <div class="alerta info">
+          <span class="alerta-icon">📱</span>
+          <span>Apps gratuitos úteis: <strong>Google Planilhas</strong>, <strong>ContaAzul MEI</strong> ou o extrato do Nubank PJ já organizado por categoria.</span>
+        </div>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">Formas de Pagamento a Oferecer</h3>
+        <div class="cards-grid">
+          <div class="card verde"><div class="card-icon">⚡</div><h4>PIX (prioridade)</h4><p>Instantâneo, sem taxa. Crie chave PIX com o CNPJ do MEI.</p></div>
+          <div class="card verde"><div class="card-icon">💳</div><h4>Cartão (maquininha)</h4><p>InfinitePay ou PagBank: ~0,75–1,5% débito, ~2,5–3% crédito. Sem aluguel.</p></div>
+          <div class="card verde"><div class="card-icon">🛒</div><h4>iFood Pay</h4><p>Para pedidos via plataforma — iFood processa e repassa semanalmente.</p></div>
+          <div class="card verde"><div class="card-icon">💵</div><h4>Dinheiro</h4><p>Para retirada presencial. Sempre anote ou emita recibo.</p></div>
+        </div>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">Sazonalidade — Datas que Mais Vendem</h3>
+        <table>
+          <thead><tr><th>Período</th><th>Oportunidade</th><th>Ação Sugerida</th></tr></thead>
+          <tbody>
+            <tr><td>Jan–Fev</td><td>Festas de início de ano</td><td>Pacotes para eventos, promoção de lançamento</td></tr>
+            <tr><td>Jun–Jul</td><td>Festas Juninas — alta demanda</td><td>Cardápio temático, kits juninos</td></tr>
+            <tr><td>Outubro</td><td>Dia das Crianças e festas infantis</td><td>Kits personalizados, brigadeiros coloridos</td></tr>
+            <tr><td>Novembro</td><td>Black Friday</td><td>Desconto em kits grandes antecipados</td></tr>
+            <tr><td>Dezembro</td><td>Natal, confraternizações, Réveillon</td><td>Mês de maior volume — estoque extra</td></tr>
+            <tr><td>Todo fim de semana</td><td>Aniversários e reuniões</td><td>Manter estoque base, prazo mínimo 24h</td></tr>
+          </tbody>
+        </table>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">Política de Pedidos</h3>
+        <ul class="checklist">
+          <li><div class="check-box"></div><span><strong>Pedido mínimo:</strong> ex. 2 dúzias ou R$ 50</span></li>
+          <li><div class="check-box"></div><span><strong>Prazo:</strong> mínimo 24h de antecedência (48h para pedidos grandes)</span></li>
+          <li><div class="check-box"></div><span><strong>Área de entrega:</strong> raio em km ou bairros atendidos — seja claro</span></li>
+          <li><div class="check-box"></div><span><strong>Taxa de entrega:</strong> valor fixo ou por distância</span></li>
+          <li><div class="check-box"></div><span><strong>Cancelamento:</strong> menos de 12h não há reembolso de insumos já usados</span></li>
+          <li><div class="check-box"></div><span><strong>PIX antecipado</strong> para pedidos grandes (50+ unidades)</span></li>
+        </ul>
+      </div>
+      <div class="page-nav-footer">
+        <button onclick="prevPage()">← Linha de Congelados</button>
+        <button onclick="nextPage()">Métricas e KPIs →</button>
+      </div>
+    </section>
+
+    <!-- ══════════════ KPIs ══════════════ -->
+    <section class="page" id="kpis" data-title="Métricas e KPIs">
+      <div class="step" data-numero="">
+        <div class="step-header">
+          <div class="step-icon">📈</div>
+          <div class="step-title">
+            <h2>Métricas e KPIs</h2>
+            <p>O que medir · Com que frequência · Como saber se o negócio está indo bem</p>
+          </div>
+        </div>
+
+        <div class="alerta atencao">
+          <span class="alerta-icon">⚠️</span>
+          <span>Negócio sem métricas é dirigir no escuro. Você não precisa de um dashboard sofisticado — precisa de <strong>5 números que olha toda semana</strong> e que te dizem a verdade sobre o que está acontecendo.</span>
+        </div>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">KPIs Semanais — Olhar toda segunda-feira</h3>
+        <table>
+          <thead><tr><th>Métrica</th><th>Como calcular</th><th>Meta inicial</th><th class="td-valor">Alerta se...</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Receita bruta</strong></td><td>Soma de todos os pedidos da semana</td><td>Crescer 10%/semana no mês 1</td><td class="td-valor">Cair 2 semanas seguidas</td></tr>
+            <tr><td><strong>Ticket médio</strong></td><td>Receita bruta ÷ nº de pedidos</td><td>Acima de R$ 45</td><td class="td-valor">Abaixo de R$ 30</td></tr>
+            <tr><td><strong>Nº de pedidos</strong></td><td>Contagem direta</td><td>Crescer semana a semana</td><td class="td-valor">Zero por 2 dias seguidos</td></tr>
+            <tr><td><strong>Custo de ingredientes</strong></td><td>Total gasto com insumos</td><td>Máx. 35% da receita</td><td class="td-valor">Acima de 40%</td></tr>
+            <tr><td><strong>Lucro líquido</strong></td><td>Receita − todos os custos</td><td>Positivo a partir do mês 2</td><td class="td-valor">Negativo no mês 3</td></tr>
+          </tbody>
+        </table>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">KPIs Mensais — Olhar no primeiro dia de cada mês</h3>
+        <table>
+          <thead><tr><th>Métrica</th><th>O que indica</th><th class="td-valor">Meta</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Taxa de recompra</strong></td><td>% de clientes que compraram mais de 1 vez</td><td class="td-valor">&gt; 30% no mês 3</td></tr>
+            <tr><td><strong>CAC</strong> (Custo por Cliente)</td><td>Quanto você gastou para conseguir cada cliente novo (anúncios ÷ novos clientes)</td><td class="td-valor">&lt; R$ 15</td></tr>
+            <tr><td><strong>Margem bruta</strong></td><td>(Receita − Custo ingredientes + embalagem) ÷ Receita</td><td class="td-valor">&gt; 60%</td></tr>
+            <tr><td><strong>Avaliação iFood</strong></td><td>Nota média da loja</td><td class="td-valor">≥ 4,5 ⭐</td></tr>
+            <tr><td><strong>Seguidores novos</strong></td><td>Crescimento orgânico do Instagram</td><td class="td-valor">+50 mês 1, +100 mês 2+</td></tr>
+            <tr><td><strong>Pedidos via canal</strong></td><td>% iFood vs. WhatsApp vs. direto</td><td class="td-valor">Diversificar ao longo do tempo</td></tr>
+          </tbody>
+        </table>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">Onde Encontrar os Dados</h3>
+        <div class="cards-grid">
+          <div class="card azul"><div class="card-icon">🛵</div><h4>Painel iFood</h4><p>Acesse: pedidos, avaliações, faturamento, taxa de cancelamento e horários de pico.</p></div>
+          <div class="card azul"><div class="card-icon">📱</div><h4>Instagram Insights</h4><p>Alcance, impressões, salvamentos, cliques no link da bio e crescimento de seguidores.</p></div>
+          <div class="card azul"><div class="card-icon">💬</div><h4>WhatsApp Business</h4><p>Mensagens enviadas, entregues e lidas. Indicador de engajamento da lista de transmissão.</p></div>
+          <div class="card azul"><div class="card-icon">📊</div><h4>Google Planilhas</h4><p>Sua própria planilha de caixa (receitas, custos, lucro). A mais honesta de todas.</p></div>
+        </div>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">Modelo de Revisão Mensal (30 min. todo início de mês)</h3>
+        <ul class="checklist">
+          <li><div class="check-box"></div><span>Qual foi a receita total do mês? Cresceu ou caiu em relação ao anterior?</span></li>
+          <li><div class="check-box"></div><span>Qual o produto mais vendido? E o menos vendido? (avaliar retirar do cardápio)</span></li>
+          <li><div class="check-box"></div><span>Qual o canal que trouxe mais pedidos? (iFood, WhatsApp, indicação?)</span></li>
+          <li><div class="check-box"></div><span>Quantos clientes novos chegaram? Quantos voltaram a comprar?</span></li>
+          <li><div class="check-box"></div><span>Houve alguma reclamação? O que causou? Como evitar?</span></li>
+          <li><div class="check-box"></div><span>Qual ação de marketing gerou mais resultado?</span></li>
+          <li><div class="check-box"></div><span>O lucro está crescendo? Estou no caminho do break-even?</span></li>
+        </ul>
+
+        <div class="alerta sucesso">
+          <span class="alerta-icon">✅</span>
+          <span><strong>Regra de ouro:</strong> Uma métrica que você não age sobre não serve para nada. Só meça o que te fará tomar uma decisão diferente. Se não vai mudar nada, não precisa medir.</span>
+        </div>
+      </div>
+      <div class="page-nav-footer">
+        <button onclick="prevPage()">← Gestão Financeira</button>
+        <button onclick="nextPage()">Orçamento →</button>
+      </div>
+    </section>
+
+    <!-- ══════════════ ORÇAMENTO ══════════════ -->
+    <section class="page" id="orcamento" data-title="Orçamento Consolidado">
+      <div class="orcamento-box">
+        <h2>💰 Orçamento Consolidado</h2>
+
+        <h3 style="color: var(--dourado); margin: 0 0 16px; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;">Investimento Inicial (uma única vez)</h3>
+        <div class="orca-linha"><span>⚙️ Equipamentos de produção (mínimo viável)</span><span class="valor-verde">R$ 1.450 – R$ 3.330</span></div>
+        <div class="orca-linha"><span>🍴 Utensílios</span><span class="valor-verde">R$ 460 – R$ 913</span></div>
+        <div class="orca-linha"><span>🛒 Estoque inicial de ingredientes</span><span class="valor-verde">R$ 255 – R$ 426</span></div>
+        <div class="orca-linha"><span>📦 Embalagens iniciais</span><span class="valor-verde">R$ 225 – R$ 440</span></div>
+        <div class="orca-linha"><span>🎓 Curso Manipulação de Alimentos</span><span class="valor-verde">R$ 60 – R$ 200</span></div>
+        <div class="orca-linha"><span>📄 MEI (abertura de empresa)</span><span class="valor-verde">GRATUITO</span></div>
+        <div class="orca-linha"><span>📱 Marketing inicial (Instagram + WhatsApp)</span><span class="valor-verde">GRATUITO</span></div>
+        <div class="orca-linha"><span>🎨 Identidade Visual (Lucas)</span><span class="valor-verde">GRATUITO</span></div>
+        <div class="orca-total"><span>💼 TOTAL INVESTIMENTO INICIAL</span><span>R$ 2.450 – R$ 5.309</span></div>
+
+        <h3 style="color: var(--dourado); margin: 28px 0 16px; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;">Custos Mensais Operacionais</h3>
+        <div class="orca-linha"><span>🛒 Ingredientes (produção mensal estimada)</span><span class="valor-verde">R$ 400 – R$ 900</span></div>
+        <div class="orca-linha"><span>📦 Reposição de embalagens</span><span class="valor-verde">R$ 100 – R$ 200</span></div>
+        <div class="orca-linha"><span>🔥 Gás de cozinha (botijão 13kg)</span><span class="valor-verde">R$ 100 – R$ 180</span></div>
+        <div class="orca-linha"><span>⚡ Energia elétrica extra (freezer + forno)</span><span class="valor-verde">R$ 60 – R$ 130</span></div>
+        <div class="orca-linha"><span>📄 DAS MEI (INSS + ISS)</span><span class="valor-verde">R$ 75,90</span></div>
+        <div class="orca-linha"><span>🚴 Entregas (combustível ou mototaxi)</span><span class="valor-verde">R$ 80 – R$ 200</span></div>
+        <div class="orca-linha"><span>📱 iFood mensalidade (após R$ 1.800/mês)</span><span class="valor-verde">R$ 0 – R$ 110</span></div>
+        <div class="orca-total"><span>📅 CUSTO MENSAL ESTIMADO</span><span>R$ 815 – R$ 1.795</span></div>
+
+        <h3 style="color: var(--dourado); margin: 28px 0 16px; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;">Projeção de Receita (Conservadora)</h3>
+        <div class="orca-linha"><span>Mês 1 — Arranque e primeiras vendas (20–30 dúzias)</span><span class="valor-verde">R$ 700 – R$ 1.200</span></div>
+        <div class="orca-linha"><span>Mês 2 — Crescimento orgânico (40–60 dúzias)</span><span class="valor-verde">R$ 1.400 – R$ 2.100</span></div>
+        <div class="orca-linha"><span>Mês 3 — Com iFood ativo (60–100 dúzias)</span><span class="valor-verde">R$ 2.100 – R$ 3.500</span></div>
+        <div class="orca-linha"><span>Mês 6 — Consolidado (100–150 dúzias)</span><span class="valor-verde">R$ 3.500 – R$ 5.250</span></div>
+        <div class="orca-total" style="background: var(--verde-claro); color: var(--cinza-escuro);"><span>📈 PONTO DE EQUILÍBRIO (Break-even) Estimado</span><span>Mês 2 – 3</span></div>
+      </div>
+      <div class="page-nav-footer">
+        <button onclick="prevPage()">← Métricas e KPIs</button>
+        <button onclick="nextPage()">Gestão de Riscos →</button>
+      </div>
+    </section>
+
+    <!-- ══════════════ RISCOS ══════════════ -->
+    <section class="page" id="riscos" data-title="Gestão de Riscos">
+      <div class="step" data-numero="">
+        <div class="step-header">
+          <div class="step-icon">⚠️</div>
+          <div class="step-title">
+            <h2>Gestão de Riscos</h2>
+            <p>Cenários adversos · Plano B · Fundo de emergência</p>
+          </div>
+        </div>
+
+        <div class="alerta info">
+          <span class="alerta-icon">🛡️</span>
+          <span>Pensar no que pode dar errado <strong>antes</strong> que aconteça é o que separa quem sobrevive nos primeiros 6 meses de quem fecha. Não é pessimismo — é preparo.</span>
+        </div>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">Matriz de Riscos</h3>
+        <table>
+          <thead><tr><th>Risco</th><th>Probabilidade</th><th>Impacto</th><th class="td-valor">Prioridade</th></tr></thead>
+          <tbody>
+            <tr><td>Vendas abaixo do break-even por 2+ meses</td><td>🟡 Média</td><td>🔴 Alto</td><td class="td-valor">🔴 Crítico</td></tr>
+            <tr><td>Reclamação de qualidade / cliente insatisfeito</td><td>🟡 Média</td><td>🟡 Médio</td><td class="td-valor">🟡 Alto</td></tr>
+            <tr><td>Freezer quebra e perde estoque</td><td>🟢 Baixa</td><td>🔴 Alto</td><td class="td-valor">🟡 Alto</td></tr>
+            <tr><td>Ingrediente em falta ou preço dispara</td><td>🟡 Média</td><td>🟡 Médio</td><td class="td-valor">🟡 Alto</td></tr>
+            <tr><td>iFood muda comissão ou política</td><td>🟡 Média</td><td>🟡 Médio</td><td class="td-valor">🟡 Médio</td></tr>
+            <tr><td>Concorrente novo entra na mesma área</td><td>🟡 Média</td><td>🟢 Baixo</td><td class="td-valor">🟢 Baixo</td></tr>
+            <tr><td>Problema com a Vigilância Sanitária</td><td>🟢 Baixa</td><td>🔴 Alto</td><td class="td-valor">🟡 Alto</td></tr>
+          </tbody>
+        </table>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">Planos de Resposta por Risco</h3>
+
+        <div style="border-left: 4px solid var(--vermelho); background: #fde8e8; border-radius: 0 10px 10px 0; padding: 16px 18px; margin: 12px 0;">
+          <h4 style="color: var(--vermelho); margin-bottom: 8px;">🔴 Vendas abaixo do break-even por 2+ meses</h4>
+          <ul style="list-style: none; font-size: 0.9rem; color: var(--cinza-escuro);">
+            <li style="padding: 3px 0;">→ Revisar o cardápio: eliminar itens pouco vendidos, focar no produto campeão</li>
+            <li style="padding: 3px 0;">→ Fazer promoção pontual para gerar volume e avaliações</li>
+            <li style="padding: 3px 0;">→ Ativar canal B2B: prospectar 5 empresas ou cerimoniais da região</li>
+            <li style="padding: 3px 0;">→ Reduzir custos: renegociar preço com fornecedor, trocar ingrediente por equivalente mais barato</li>
+            <li style="padding: 3px 0;">→ Se não melhorar em 30 dias: revisar precificação e posicionamento com alguém de fora</li>
+          </ul>
+        </div>
+
+        <div style="border-left: 4px solid var(--dourado); background: #fff3cd; border-radius: 0 10px 10px 0; padding: 16px 18px; margin: 12px 0;">
+          <h4 style="color: #856404; margin-bottom: 8px;">🟡 Reclamação de qualidade</h4>
+          <ul style="list-style: none; font-size: 0.9rem; color: var(--cinza-escuro);">
+            <li style="padding: 3px 0;">→ Responder <strong>imediatamente</strong> (máx. 2h) com empatia, sem defensividade</li>
+            <li style="padding: 3px 0;">→ Oferecer reposição ou reembolso sem questionar — reputação vale mais que um pedido</li>
+            <li style="padding: 3px 0;">→ Investigar a causa raiz: ingrediente, temperatura de fritura, armazenamento?</li>
+            <li style="padding: 3px 0;">→ Documentar o ocorrido para evitar repetição</li>
+            <li style="padding: 3px 0;">→ No iFood: sempre responda avaliações negativas com cordialidade — outros clientes leem</li>
+          </ul>
+        </div>
+
+        <div style="border-left: 4px solid var(--dourado); background: #fff3cd; border-radius: 0 10px 10px 0; padding: 16px 18px; margin: 12px 0;">
+          <h4 style="color: #856404; margin-bottom: 8px;">🟡 Freezer quebra</h4>
+          <ul style="list-style: none; font-size: 0.9rem; color: var(--cinza-escuro);">
+            <li style="padding: 3px 0;">→ Fundo de emergência cobre o conserto ou aluguel de um freezer temporário</li>
+            <li style="padding: 3px 0;">→ Enquanto isso: pausar iFood, comunicar clientes com transparência</li>
+            <li style="padding: 3px 0;">→ Produzir apenas sob demanda confirmada (sem estoque congelado)</li>
+            <li style="padding: 3px 0;">→ Prevenção: limpar o condensador a cada 3 meses, não sobrecarregar o freezer</li>
+          </ul>
+        </div>
+
+        <div style="border-left: 4px solid var(--dourado); background: #fff3cd; border-radius: 0 10px 10px 0; padding: 16px 18px; margin: 12px 0;">
+          <h4 style="color: #856404; margin-bottom: 8px;">🟡 Ingrediente em falta ou preço dispara</h4>
+          <ul style="list-style: none; font-size: 0.9rem; color: var(--cinza-escuro);">
+            <li style="padding: 3px 0;">→ Mantenha sempre <strong>2 fornecedores alternativos</strong> para cada ingrediente crítico (frango, queijo, farinha)</li>
+            <li style="padding: 3px 0;">→ Se o preço subir acima de 20%: reajustar preço de venda ou trocar por substituto equivalente</li>
+            <li style="padding: 3px 0;">→ Comunicar reajuste com antecedência e justificativa honesta aos clientes fiéis</li>
+          </ul>
+        </div>
+
+        <div style="border-left: 4px solid #3a86ff; background: #e8f4fd; border-radius: 0 10px 10px 0; padding: 16px 18px; margin: 12px 0;">
+          <h4 style="color: #1d4e89; margin-bottom: 8px;">🔵 iFood muda comissão ou política</h4>
+          <ul style="list-style: none; font-size: 0.9rem; color: var(--cinza-escuro);">
+            <li style="padding: 3px 0;">→ Nunca dependa de um canal único — mantenha WhatsApp e Instagram ativos em paralelo</li>
+            <li style="padding: 3px 0;">→ Cadastrar no Rappi e Uber Eats a partir do mês 3 como backup</li>
+            <li style="padding: 3px 0;">→ Construir lista de clientes própria (WhatsApp, e-mail) que é <strong>sua</strong>, não da plataforma</li>
+          </ul>
+        </div>
+
+        <h3 style="margin: 20px 0 12px; color: var(--laranja);">Fundo de Emergência</h3>
+        <div style="background: var(--cinza-claro); border-radius: 12px; padding: 20px;">
+          <p style="font-size: 0.93rem; margin-bottom: 12px;">Reserve o equivalente a <strong>2–3 meses de custos operacionais</strong> em conta separada, intocável exceto em emergência.</p>
+          <div class="dois-paineis">
+            <div class="painel">
+              <h4>Meta do fundo</h4>
+              <ul>
+                <li>2 meses de custo: ~R$ 1.630 – R$ 3.590</li>
+                <li>Guardar em conta rendimento (CDB, Nubank)</li>
+                <li>Construir ao longo dos primeiros 6 meses</li>
+              </ul>
+            </div>
+            <div class="painel">
+              <h4>Quando usar</h4>
+              <ul>
+                <li>Equipamento quebrado com urgência</li>
+                <li>Mês de vendas muito abaixo do previsto</li>
+                <li>Oportunidade de crescimento inesperada</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page-nav-footer">
+        <button onclick="prevPage()">← Orçamento</button>
+        <button onclick="nextPage()">Roadmap →</button>
+      </div>
+    </section>
+
+    <!-- ══════════════ ROADMAP ══════════════ -->
+    <section class="page" id="roadmap" data-title="Roadmap — 6 Primeiros Meses">
+      <div class="step" data-numero="">
+        <div class="step-header">
+          <div class="step-icon">🗓️</div>
+          <div class="step-title">
+            <h2>Roadmap — 6 Primeiros Meses</h2>
+            <p>Da ideia à operação consolidada</p>
+          </div>
+        </div>
+        <div class="timeline">
+          <div class="tl-item"><h4>Semanas 1–2 — Fundação Legal</h4><p>Abrir MEI · Fazer curso de manipulação · Contatar Vigilância Sanitária · Adaptar a cozinha às BPF · Abrir conta PJ gratuita.</p></div>
+          <div class="tl-item"><h4>Semanas 3–4 — Estrutura Física + Identidade Visual</h4><p>Comprar equipamentos e utensílios · Montar bancada · Organizar freezer · <strong>Briefar o Lucas</strong>: nome da marca, cores, referências visuais. Testar receitas e padronizar.</p></div>
+          <div class="tl-item"><h4>Semanas 5–6 — Branding e Sessão de Fotos</h4><p>Receber logo + paleta de cores do Lucas · Sessão fotográfica dos produtos · Criar cardápio visual · Montar peças para Instagram, WhatsApp e iFood. Abrir conta PJ.</p></div>
+          <div class="tl-item"><h4>Mês 2 — Lançamento Digital</h4><p>Criar perfil comercial no Instagram com identidade visual pronta · Configurar WhatsApp Business com catálogo e capa · Cadastrar no iFood com fotos e banner · Publicar página estática · Primeiras vendas para rede próxima.</p></div>
+          <div class="tl-item"><h4>Mês 3 — Tráfego Orgânico Ativo</h4><p>Postar Reels 3x/semana · Construir 20+ avaliações no iFood e Google · Promoção de lançamento · Testar produtos novos com feedback de clientes.</p></div>
+          <div class="tl-item"><h4>Meses 4–5 — Escala e Ajustes</h4><p>Aumentar lotes de produção · Criar lista de transmissão WhatsApp · Avaliar produto mais vendido · Criar combos e pacotes para festas.</p></div>
+          <div class="tl-item"><h4>Mês 6 — Fase 2: Tráfego Pago</h4><p>Criar página mestre (landing page) · Começar Meta Ads com R$ 300–500 · Testar Google Ads local · Avaliar iFood Ads · Medir ROAS.</p></div>
+        </div>
+      </div>
+
+      <div style="margin-top: 40px; text-align: center; padding: 20px 0 10px;">
+        <blockquote style="display:inline-block; font-style:italic; color:#6b5a4e; font-size:0.95rem; line-height:1.8; border-left:2px solid #c8a882; padding-left:16px; text-align:left;">
+          "Não importa o tamanho do problema, eu estarei ao seu lado até o final ❤️"
+          <cite style="display:block; margin-top:8px; font-style:normal; font-size:0.85rem; color:#a07858;">— Lucas</cite>
+        </blockquote>
+      </div>
+
+      <div class="page-nav-footer">
+        <button onclick="prevPage()">← Gestão de Riscos</button>
+        <button onclick="showPage('home')">🏠 Início</button>
+      </div>
+    </section>
+
+  </div><!-- /content-area -->
+</div><!-- /main-wrapper -->
+
+<script>
+  const pages = ['home','passo1','passo2','passo3','passo4','passo5','passo6','passo7','passo8','passo9','passo10','b2b','congelados','financeiro','kpis','orcamento','riscos','roadmap'];
+  let current = 0;
+
+  function showPage(id) {
+    const idx = pages.indexOf(id);
+    if (idx === -1) return;
+
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+
+    document.querySelectorAll('.nav-item').forEach(n => {
+      n.classList.toggle('active', n.dataset.page === id);
+    });
+
+    const title = document.getElementById(id).dataset.title || id;
+    document.getElementById('topbar-title').textContent = title;
+    document.getElementById('page-counter').textContent = (idx + 1) + ' / ' + pages.length;
+
+    const pct = ((idx + 1) / pages.length * 100).toFixed(1);
+    document.getElementById('progress-fill').style.width = pct + '%';
+
+    document.getElementById('btn-prev').disabled = idx === 0;
+    document.getElementById('btn-next').disabled = idx === pages.length - 1;
+
+    current = idx;
+    window.location.hash = id;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    closeSidebar();
+  }
+
+  function nextPage() { if (current < pages.length - 1) showPage(pages[current + 1]); }
+  function prevPage() { if (current > 0) showPage(pages[current - 1]); }
+
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('overlay').classList.toggle('visible');
+  }
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('overlay').classList.remove('visible');
+  }
+
+  // keyboard navigation
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') nextPage();
+    if (e.key === 'ArrowLeft')  prevPage();
+  });
+
+  // init
+  window.addEventListener('load', () => {
+    const hash = window.location.hash.slice(1);
+    showPage(pages.includes(hash) ? hash : 'home');
+  });
+</script>
+</body>
+</html>
